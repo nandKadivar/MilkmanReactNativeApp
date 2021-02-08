@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="224" height="99.751" viewBox="0 0 224 99.751">
+  <g id="app-logo" transform="translate(-95 -131)">
+    <g id="Ellipse_44" data-name="Ellipse 44" transform="translate(166 131)" fill="none" stroke="#4753b7" stroke-width="2">
+      <circle cx="46" cy="46" r="46" stroke="none"/>
+      <circle cx="46" cy="46" r="45" fill="none"/>
+    </g>
+    <ellipse id="Ellipse_45" data-name="Ellipse 45" cx="42" cy="41.5" rx="42" ry="41.5" transform="translate(170 135)" fill="#4753b7"/>
+    <rect id="Rectangle_98" data-name="Rectangle 98" width="10.912" height="25.916" transform="matrix(0.799, 0.602, -0.602, 0.799, 199.984, 144.152)" fill="#5f85f1"/>
+    <rect id="Rectangle_99" data-name="Rectangle 99" width="9.548" height="25.916" transform="matrix(0.799, 0.602, -0.602, 0.799, 209.788, 151.54)" fill="#5f85f1"/>
+    <path id="Path_162" data-name="Path 162" d="M0,6.559H21.195l-3.6-5.143L18.34,0H2.529l.944,1.416Z" transform="matrix(0.799, 0.602, -0.602, 0.799, 205.037, 138.182)" fill="#5f85f1"/>
+    <g id="Rectangle_96" data-name="Rectangle 96" transform="translate(95 182)" fill="#fff" stroke="#4753b7" stroke-width="1">
+      <rect width="224" height="43" rx="12" stroke="none"/>
+      <rect x="0.5" y="0.5" width="223" height="42" rx="11.5" fill="none"/>
+    </g>
+    <rect id="Rectangle_97" data-name="Rectangle 97" width="218" height="36" rx="11" transform="translate(98 185)" fill="#4753b7"/>
+    <path id="Path_160" data-name="Path 160" d="M2752.85,3547.716s3.858,12.568,1.89,23.364-2.7,7.208-3.6,15.816,8.985,11.166,5.631,21.576c-.952,2.957-3.4,4.522-7.287,4.945-5.466-1.562-19.334-1.279-10.3,2.842,1.866.851-10.3,9.222-7.131,10.631,7.324,3.255,32.692.094,44.245,0,6.07-.048,14.715,2.429,20.821,0,4.094-1.626,12.159,3.444,14.575,2.6,6.576-2.289,27.714-13.6,2.5-14.721,2.944-4.556-7.988-.326-6.946-1.854-5.472-8.665-17.912-1.583-18.894-3.437-5.355-10.11-6.964-4.5-8.179-21.384s-11.521-13.448-13.213-25.426S2752.85,3547.716,2752.85,3547.716Z" transform="translate(-2532.583 -3398.837)" fill="#fff"/>
+    <text id="Milkman" transform="translate(120 210)" fill="#5f85f1" font-size="26" font-family="Cinzel-ExtraBold, Cinzel" font-weight="800" letter-spacing="0.311em"><tspan x="0" y="0">Milkman</tspan></text>
+    <path id="Path_163" data-name="Path 163" d="M3102.979,3244.494h92.279" transform="translate(-2903 -3020)" fill="none" stroke="#4753b7" stroke-width="1"/>
+  </g>
+</svg>
