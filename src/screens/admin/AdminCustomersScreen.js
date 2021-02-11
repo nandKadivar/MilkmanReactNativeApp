@@ -1,18 +1,17 @@
 import React from 'react'
 import {SafeAreaView} from 'react-navigation'
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions,ImageBackground} from 'react-native';
-// import Map from '../components/Map'
 
-const ProfileScreen = () => {
+const AdminCustomersScreen = () => {
     return (
         <View style={styles.container}>
-            <Text>Profile Screen</Text>
+            <Text>Admin Customer Screen</Text>
             {/* <Map /> */}
         </View>
     )
 }
 
-export default ProfileScreen
+export default AdminCustomersScreen
 
 const styles = StyleSheet.create({
     container: {

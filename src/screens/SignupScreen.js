@@ -9,9 +9,9 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const SignupScreen = ({navigation}) => {
-    const [name,setName] = useState('a')
-    const [email,setEmail] = useState('a')
-    const [password,setPassword] = useState('a')
+    const [name,setName] = useState('')
+    const [email,setEmail] = useState('')
+    const [password,setPassword] = useState('')
 
     const nameChangeHandler = (value) => {
         setName(value)
@@ -31,7 +31,7 @@ const SignupScreen = ({navigation}) => {
                     .set({
                         name,email
                     })
-                console.log(result)
+                // console.log(result)
             })
             .catch((err) => {
             console.log(err)

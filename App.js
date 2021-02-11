@@ -21,19 +21,20 @@ import OnboardingScreen from './src/screens/OnboardingScreen'
 import LandingScreen from './src/screens/LandingScreen'
 import SignupScreen from './src/screens/SignupScreen'
 import LoginScreen from './src/screens/LoginScreen'
+import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import Main from './src/screens/Main'
-// import ExploreScreen from './src/screens/ExploreScreen'
 
 
 export default function App() {
-  const [isFirstLaunch, setIsFirstLaunch] = useState()
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
   
   useEffect(() => {
     AsyncStorage.getItem('alreadyLaunch').then(value => {
+      console.log(value)
       if (value === null) {
-        AsyncStorage.setItem('alreacyLaunch', 'true');
+        AsyncStorage.setItem('alreadyLaunch', 'true');
         setIsFirstLaunch(true);
       } else {
         setIsFirstLaunch(false);
@@ -73,23 +74,11 @@ export default function App() {
           <Stack.Screen name="Landing" options={{ headerShown: false }} component={LandingScreen} />
           <Stack.Screen name="Signup" options={{ headerShown: false }} component={SignupScreen} />
           <Stack.Screen name="Login" options={{ headerShown: false }} component={LoginScreen} />
-          {/* <Stack.Screen name="Explore" options={{ headerShown: false }} component={ExploreScreen} /> */}
+          <Stack.Screen name="ForgotPassword" options={{ headerShown: false }} component={ForgotPasswordScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     )
   }
-
-  // componentDidMount() {
-  //   firebase.auth().onAuthStateChange((user) => {
-  //     if (!user) {
-  //       setLoggedIn(false)
-  //       setLoaded(true)
-  //     } else {
-  //       setLoggedIn(true)
-  //       setLoaded(true)
-  //     }
-  //   })
-  // }
 
   return (
     <Provider store={store}>
@@ -98,7 +87,6 @@ export default function App() {
           <Stack.Screen name="Main" options={{ headerShown: false }} component={Main} />
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <HomeScreen /> */}
     </Provider>
   );
 }

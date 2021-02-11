@@ -1,15 +1,15 @@
 import React,{useEffect} from 'react'
 import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native'
 import { Text } from 'react-native-paper'
-import ProfileScreen from './ProfileScreen'
-// import NotificationsScreen from './'
+import AdminProfileScreen from './AdminProfileScreen'
+import AdminNotificationsScreen from './AdminNotificationsScreen'
 import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUser } from '../actions/index'
-import ExploreLogo from '../../assets/logo/ExploreLogo'
-import {primaryColor} from '../theme'
+import { fetchUser } from '../../actions/index'
+// import ExploreLogo from '../../../assets/logo/ExploreLogo'
+import {primaryColor} from '../../theme'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -24,7 +24,7 @@ const logoutHandler = async ({ navigation }) => {
     })
 }
 
-const Home = ({ navigation }) => {
+const AdminHome = ({ navigation }) => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -33,38 +33,30 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.mainContainer}>
-          <ExploreLogo />
-          <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
-            <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
-          </TouchableOpacity>
+          {/* <ExploreLogo /> */}
+          {/* <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}> */}
+            <Text style={styles.btnText}><FontAwesome name='' />Hello Admin user</Text>
+          {/* </TouchableOpacity> */}
         </View>
       </View>
     );
   }
   
-const Notifications = () => {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Notifications Screen</Text>
-      </View>
-    );
-}
-  
-const CustomDrawerContent = (props) => {
+const AdminCustomDrawerContent = (props) => {
   const dispatch = useDispatch()
   const { currentUser } = useSelector(state => state.userState)
-
+  
   useEffect(() => {
     dispatch(fetchUser())
-  }, [dispatch])
+  },[dispatch])
   
   return (
       <View flex={1}>
         <DrawerContentScrollView {...props}>
         {/* <DrawerItemList {...props} /> */}
           <View style={styles.mainContent}>
-            <View style={styles.userInfo}>
-            <View style={styles.avatar}><Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{ currentUser.name[0] }</Text></View>
+            <View style={styles.adminInfo}>
+              <View style={styles.avatar}><Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{currentUser.name[0]}</Text></View>
               <Text style={{ fontSize: 22, marginTop: 5 }}>{ currentUser.name }</Text>
               <Text style={{ fontSize: 12, marginTop: 2, color: '#9D9D9D' }}>{ currentUser.email }</Text>
             </View>
@@ -72,12 +64,12 @@ const CustomDrawerContent = (props) => {
           <DrawerItem
             label="Profile"
             icon={({ color }) => (<FontAwesome name="user" color={color} size={22} />)}
-            // onPress={}
+            onPress={() => props.navigation.navigate('AdminProfile')}
           />
           <DrawerItem
             label="Notifications"
             icon={({ color }) => (<FontAwesome name="bell" color={color} size={20} />)}
-            // onPress={}
+            onPress={() => props.navigation.navigate('AdminNotifications')}
           />
         {/* <DrawerItem label="Close drawer" onPress={() => props.navigation.closeDrawer()} /> */}
           <DrawerItem
@@ -95,24 +87,23 @@ const CustomDrawerContent = (props) => {
   
 const drawer = createDrawerNavigator();
   
-const MyDrawer = () => {
+const AdminDrawer = () => {
     return (
-      <drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
-        <drawer.Screen name="Homepage" component={Home} label="Home" />
-        <drawer.Screen name="Profile" component={ProfileScreen} />
-        {/* <Drawer.Screen name="Feed" component={Feed} /> */}
-        <drawer.Screen name="Notifications" component={Notifications} />
+      <drawer.Navigator drawerContent={props => <AdminCustomDrawerContent {...props} />}>
+        <drawer.Screen name="AdminHomepage" component={AdminHome} label="AdminHome" />
+        <drawer.Screen name="AdminProfile" component={AdminProfileScreen} />
+        <drawer.Screen name="AdminNotifications" component={AdminNotificationsScreen} />
       </drawer.Navigator>
     );
   }
   
-const HomeScreen = ({ navigation }) => {
+const AdminHomeScreen = ({ navigation }) => {
     return (
-        <MyDrawer />
+        <AdminDrawer />
     )
 }
 
-export default HomeScreen
+export default AdminHomeScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -150,7 +141,7 @@ const styles = StyleSheet.create({
     color: primaryColor,
     fontWeight: 'bold'
   },
-  userInfo: {
+  adminInfo: {
     marginTop: 10,
     marginLeft: 15,
   },

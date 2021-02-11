@@ -5,11 +5,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const InputField = ({icon, placeholder, secureTextEntry, onChangeText}) => {
+const InputField = ({icon,iconSize, placeholder, secureTextEntry, onChangeText}) => {
     return (
         <View style={styles.container}>
             <View style={styles.icon}>
-                <FontAwesome name={icon} size={18} color="#0059D4" />
+                <FontAwesome name={icon} size={Number(iconSize)} color="#0059D4" />
             </View>
             {secureTextEntry == 'true' ?
                     <TextInput style={styles.input} placeholder={placeholder} secureTextEntry={true} onChangeText={onChangeText} />
@@ -18,6 +18,10 @@ const InputField = ({icon, placeholder, secureTextEntry, onChangeText}) => {
             }
         </View>
     )
+}
+
+InputField.defaultProps = {
+    iconSize: 18
 }
 
 export default InputField

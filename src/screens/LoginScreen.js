@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Animated} from 'react-native';
 import UserLogo from '../../assets/logo/UserLogo';
 import firebase from '@firebase/app'
 import InputField from '../components/InputField'
@@ -9,8 +9,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const LoginScreen = ({navigation}) => {
-    const [email,setEmail] = useState('a')
-    const [password,setPassword] = useState('a')
+    const [email,setEmail] = useState('')
+    const [password,setPassword] = useState('')
 
     const emailChangeHandler = (value) => {
         setEmail(value)
@@ -28,10 +28,10 @@ const LoginScreen = ({navigation}) => {
                 console.log(error)
             })
     }
-
+    
     return (
         <View style={styles.mainContainer}>
-            <UserLogo style={{marginTop: 30}} />
+            <UserLogo style={{marginTop: 55}} />
             <Text style={styles.title}>Welcome Back</Text>
             <Text style={styles.subtitle}>Signin to continue</Text>
             <View style={styles.inputContainer}>
@@ -43,7 +43,7 @@ const LoginScreen = ({navigation}) => {
                 <Text></Text>
             </View>
             <View style={styles.forgotPasswordContainer}>
-                <Text style={styles.forgotPasswordLink} onPress={() => {}}>Forgot Password?</Text>
+                <Text style={styles.forgotPasswordLink} onPress={() => {navigation.navigate('ForgotPassword')}}>Forgot Password?</Text>
             </View>
             <TouchableOpacity style={styles.button} onPress={loginHandler}><Text style={styles.buttonText}>Log in</Text></TouchableOpacity>
             <View style={styles.linksContainer}>

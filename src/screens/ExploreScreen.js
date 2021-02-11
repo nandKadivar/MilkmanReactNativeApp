@@ -1,43 +1,92 @@
-import React from 'react'
-import {SafeAreaView} from 'react-navigation'
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions,ImageBackground, ScrollView} from 'react-native';
-import MapView,{Callout} from 'react-native-maps'
+import React,{useState,useEffect} from 'react'
+import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, Dimensions,ImageBackground, ScrollView} from 'react-native';
+import * as Location from 'expo-location'
+import MapView, { Callout } from 'react-native-maps'
 import { region, markers, mapStyle } from '../components/DairyShopData'
+import Rating from '../components/Rating'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import InputField from '../components/InputField'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchUser } from '../actions/index'
+import { getDistance } from 'geolib';
 import { primaryColor } from '../theme'
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
 
 const ExploreScreen = ({navigation}) => {
+    const [location, setLocation] = useState(null)
+    const [error, setError] = useState(null)
+
+    const dispatch = useDispatch()
+    const {currentUser} = useSelector(state => state.userState)
+
+    useEffect(() => {
+        dispatch(fetchUser())
+        getUserLocation()
+    }, [dispatch])
+    
+    const searchHandler = () => {
+        
+    }
+
+    const viewDetailsHandler = () => {
+        
+    }
+
+    const getUserLocation = async () => {
+        const { status } = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+        } else {
+            const {coords} = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
+            setLocation(coords)
+            console.log(JSON.stringify(coords))
+        }
+    }
+
     return (
-        <View style={styles.container}>
-            {/* <Text>Explore Screen</Text> */}
-            {/* <Map /> */}
+        <SafeAreaView style={styles.container}>
             <MapView
                 style={StyleSheet.absoluteFillObject}
                 loadingEnabled={true}
                 customMapStyle={mapStyle}
                 region={region}
             >
-                {
-                    markers.map(x => (
-                        <MapView.Marker
-                            key={x.id}
-                            coordinate={ x.coordinates }
-                            image={require('../../assets/images/map_marker.png')}
-                        >
-                            <Callout tooltip>
-                                <View>
-                                    <View style={styles.tooltip}>
-                                        <Text style={styles.name}>{ x.title}</Text>
-                                        <Text style={styles.description}>{ x.description}</Text>
-                                    </View>
-                                </View>
-                            </Callout>
-                        </MapView.Marker>
-                    ))
+                {   location !== null ?
+                    markers.map(x => {
+                        let distance = getDistance(x.coordinates,
+                            { latitude: location.latitude, longitude: location.longitude }
+                        );
+                        if (distance <= 5000) {
+                            return(
+                                <MapView.Marker
+                                    key={x.id}
+                                    coordinate={ x.coordinates }
+                                    image={require('../../assets/images/map_marker.png')}
+                                >
+                                    <Callout tooltip>
+                                        <View>
+                                            <View style={styles.tooltip}>
+                                                <Text style={styles.name}>{ x.title}</Text>
+                                                <Text style={styles.description}>{x.description}</Text>
+                                                {/* <Image style={styles.tooltipImage} source={require('../../assets/images/dairyshop.jpg')} /> */}
+                                            </View>
+                                            <View style={styles.arrowBorder}></View>
+                                            <View style={styles.arrow}></View>
+                                        </View>
+                                    </Callout>
+                                </MapView.Marker>
+                            )   
+                        }
+                    })
+                    :
+                    (null)
                 }
             </MapView>
+            {/* <View style={styles.searchbarContainer}>
+                <InputField icon="location-arrow" iconSize="24" onChangeText={searchHandler} placeholder="Enter your city name" />
+            </View> */}
             <ScrollView
                 horizontal
                 scrollEventThrottle={1}
@@ -45,22 +94,39 @@ const ExploreScreen = ({navigation}) => {
                 style={styles.scrollview}
             >
                 {/* <TouchableOpacity> */}
-                    {
-                        markers.map((x) => (
-                            <View style={styles.cardContainer} key={x.id}>
-                                <View style={styles.cardImageContainer}>
-                                    <Image style={styles.cardImage} resizeMode='cover' source={require('../../assets/images/dairyshop.jpg')} />
-                                </View>
-                                <View style={styles.cardTextContainer}>
-                                    <Text numberOfLines={1} style={styles.cardTitle}>{ x.title}</Text>
-                                    <Text style={styles.cardDescription}>{ x.description}</Text>
-                                </View>
-                            </View>
-                        ))
+                {
+                    location !== null ?
+                        markers.map((x) => {
+                            let distance = getDistance(x.coordinates,
+                                { latitude: location.latitude, longitude: location.longitude }
+                            );
+                            if (distance <= 5000) {
+                                return (
+                                    <View style={styles.cardContainer} key={x.id}>
+                                        <View style={styles.cardImageContainer}>
+                                            <Image style={styles.cardImage} resizeMode='cover' source={require('../../assets/images/dairyshop.jpg')} />
+                                        </View>
+                                        <View style={styles.cardTitleContainer}>
+                                            <Text numberOfLines={1} style={styles.cardTitle}>{x.title}</Text>
+                                            <Rating value="4.5" color={primaryColor} text="(45)" />
+                                        </View>
+                                        <View style={styles.cardDescriptionContainer}>
+                                            <Text style={styles.cardDescription}>{x.description}</Text>
+                                        </View>
+                                        <View style={styles.cardFooterContainer}>
+                                            <Text style={{ fontSize: 24, fontWeight: 'bold' }}><FontAwesome name='rupee-sign' size={24} /> 45 <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
+                                            <TouchableOpacity style={styles.button} onPress={viewDetailsHandler}><Text style={styles.buttonText}>View Details</Text></TouchableOpacity>
+                                        </View>
+                                    </View>
+                                )
+                            }
+                        })
+                        :
+                        (null)
                     }
                 {/* </TouchableOpacity> */}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -80,6 +146,27 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10
     },
+    arrow: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderTopColor: '#fff',
+        borderWidth: 16,
+        alignSelf: 'center',
+        marginTop: -32
+    },
+    arrowBorder: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderTopColor: '#000',
+        borderWidth: 16,
+        alignSelf: 'center',
+        marginTop: -0.5
+    },
+    searchbarContainer: {
+        width: width / 1.1,
+        position: 'absolute',
+        top: 28,
+    },
     scrollview: {
         position: 'absolute',
         bottom: 0,
@@ -93,7 +180,7 @@ const styles = StyleSheet.create({
         elevation: 1.5,
         borderRadius: 5,
         marginHorizontal: 10,
-        height: height / 4,
+        height: height / 3.5,
         width: width / 1.1,
         overflow: 'hidden'
     },
@@ -108,9 +195,16 @@ const styles = StyleSheet.create({
         height: '100%',
         // alignItems: 'center'
     },
-    cardTextContainer: {
+    cardTitleContainer: {
         // flex: 2,
-        padding: 10
+        paddingTop: 5,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    cardDescriptionContainer: {
+        paddingHorizontal: 10,
     },
     cardTitle: {
         fontSize: 14,
@@ -119,5 +213,28 @@ const styles = StyleSheet.create({
     cardDescription: {
         fontSize: 12,
         color: '#9D9D9D'
+    },
+    button: {
+        marginTop: 10,
+        width: width/2.2,
+        height: height/20,
+        borderRadius: 5,
+        // backgroundColor: '#2ba97a',
+        backgroundColor: primaryColor,
+        justifyContent: 'center'
+    },
+    buttonText: {
+        fontSize: 15,
+        textTransform: 'uppercase',
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    cardFooterContainer: {
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     }
   });
