@@ -7,7 +7,7 @@ import Rating from '../components/Rating'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import InputField from '../components/InputField'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUser } from '../actions/index'
+import { listShops } from '../actions/shopActions'
 import { getDistance } from 'geolib';
 import { primaryColor } from '../theme'
 
@@ -19,10 +19,11 @@ const ExploreScreen = ({navigation}) => {
     const [error, setError] = useState(null)
 
     const dispatch = useDispatch()
-    const {currentUser} = useSelector(state => state.userState)
+    // const {currentUser} = useSelector(state => state.userState)
+    const {shops} = useSelector(state => state.shopDetails)
 
     useEffect(() => {
-        dispatch(fetchUser())
+        dispatch(listShops())
         getUserLocation()
     }, [dispatch])
     
@@ -44,6 +45,7 @@ const ExploreScreen = ({navigation}) => {
             console.log(JSON.stringify(coords))
         }
     }
+    console.log(shops)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -54,21 +56,27 @@ const ExploreScreen = ({navigation}) => {
                 region={region}
             >
                 {   location !== null ?
-                    markers.map(x => {
-                        let distance = getDistance(x.coordinates,
+                    shops.map(x => {
+                        let distance = getDistance(
+                            { latitude: x.address.latitude, longitude: x.address.longitude },
                             { latitude: location.latitude, longitude: location.longitude }
                         );
+                        // let distance = getDistance(x.address,
+                        //     { latitude: location.latitude, longitude: location.longitude }
+                        // );
+                        // console.log(x.address.latitude)
                         if (distance <= 5000) {
+                        // console.log(x.address)
                             return(
                                 <MapView.Marker
-                                    key={x.id}
-                                    coordinate={ x.coordinates }
+                                    key={x.email}
+                                    coordinate={ { latitude: x.address.latitude, longitude: x.address.longitude } }
                                     image={require('../../assets/images/map_marker.png')}
                                 >
                                     <Callout tooltip>
                                         <View>
                                             <View style={styles.tooltip}>
-                                                <Text style={styles.name}>{ x.title}</Text>
+                                                <Text style={styles.name}>{ x.name}</Text>
                                                 <Text style={styles.description}>{x.description}</Text>
                                                 {/* <Image style={styles.tooltipImage} source={require('../../assets/images/dairyshop.jpg')} /> */}
                                             </View>
@@ -96,32 +104,33 @@ const ExploreScreen = ({navigation}) => {
                 {/* <TouchableOpacity> */}
                 {
                     location !== null ?
-                        markers.map((x) => {
-                            let distance = getDistance(x.coordinates,
-                                { latitude: location.latitude, longitude: location.longitude }
-                            );
-                            if (distance <= 5000) {
-                                return (
-                                    <View style={styles.cardContainer} key={x.id}>
-                                        <View style={styles.cardImageContainer}>
-                                            <Image style={styles.cardImage} resizeMode='cover' source={require('../../assets/images/dairyshop.jpg')} />
-                                        </View>
-                                        <View style={styles.cardTitleContainer}>
-                                            <Text numberOfLines={1} style={styles.cardTitle}>{x.title}</Text>
-                                            <Rating value="4.5" color={primaryColor} text="(45)" />
-                                        </View>
-                                        <View style={styles.cardDescriptionContainer}>
-                                            <Text style={styles.cardDescription}>{x.description}</Text>
-                                        </View>
-                                        <View style={styles.cardFooterContainer}>
-                                            <Text style={{ fontSize: 24, fontWeight: 'bold' }}><FontAwesome name='rupee-sign' size={24} /> 45 <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
-                                            <TouchableOpacity style={styles.button} onPress={viewDetailsHandler}><Text style={styles.buttonText}>View Details</Text></TouchableOpacity>
-                                        </View>
+                    shops.map((x) => {
+                        let distance = getDistance(
+                            { latitude: x.address.latitude, longitude: x.address.longitude },
+                            { latitude: location.latitude, longitude: location.longitude }
+                        );
+                        if (distance <= 5000) {
+                            return (
+                                <View style={styles.cardContainer} key={x.email}>
+                                    <View style={styles.cardImageContainer}>
+                                        <Image style={styles.cardImage} resizeMode='cover' source={require('../../assets/images/dairyshop.jpg')} />
                                     </View>
-                                )
+                                    <View style={styles.cardTitleContainer}>
+                                        <Text numberOfLines={1} style={styles.cardTitle}>{x.name}</Text>
+                                        <Rating value={4.5} color={primaryColor} text="(45)" />
+                                    </View>
+                                    <View style={styles.cardDescriptionContainer}>
+                                        <Text style={styles.cardDescription}>{x.description}</Text>
+                                    </View>
+                                    <View style={styles.cardFooterContainer}>
+                                        <Text style={{ fontSize: 24, fontWeight: 'bold' }}><FontAwesome name='rupee-sign' size={24} /> {x.price} <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
+                                        <TouchableOpacity style={styles.button} onPress={viewDetailsHandler}><Text style={styles.buttonText}>View Details</Text></TouchableOpacity>
+                                    </View>
+                                </View>
+                            )
                             }
-                        })
-                        :
+                    })
+                    :
                         (null)
                     }
                 {/* </TouchableOpacity> */}

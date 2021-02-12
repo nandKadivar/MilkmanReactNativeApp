@@ -7,7 +7,7 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerIt
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUser } from '../actions/index'
+import { getUserDetails } from '../actions/userActions'
 import ExploreLogo from '../../assets/logo/ExploreLogo'
 import {primaryColor} from '../theme'
 const windowWidth = Dimensions.get('window').width;
@@ -52,21 +52,24 @@ const Notifications = () => {
   
 const CustomDrawerContent = (props) => {
   const dispatch = useDispatch()
-  const { currentUser } = useSelector(state => state.userState)
-
-  useEffect(() => {
-    dispatch(fetchUser())
-  }, [dispatch])
+  const { user } = useSelector(state => state.userDetails)
   
+  useEffect(() => {
+    dispatch(getUserDetails())
+  }, [dispatch])
+  // console.log(user)
+
   return (
       <View flex={1}>
         <DrawerContentScrollView {...props}>
         {/* <DrawerItemList {...props} /> */}
           <View style={styles.mainContent}>
             <View style={styles.userInfo}>
-            <View style={styles.avatar}><Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{ currentUser.name[0] }</Text></View>
-              <Text style={{ fontSize: 22, marginTop: 5 }}>{ currentUser.name }</Text>
-              <Text style={{ fontSize: 12, marginTop: 2, color: '#9D9D9D' }}>{ currentUser.email }</Text>
+            <View style={styles.avatar}>
+              <Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{String(user.name)[0]}</Text>
+            </View>
+              <Text style={{ fontSize: 22, marginTop: 5 }}>{ user.name }</Text>
+              <Text style={{ fontSize: 12, marginTop: 2, color: '#9D9D9D' }}>{ user.email }</Text>
             </View>
           </View>
           <DrawerItem

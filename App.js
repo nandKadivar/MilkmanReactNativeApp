@@ -12,6 +12,7 @@ import store from './src/store'
 
 const Stack = createNativeStackNavigator()
 enableScreens();
+
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }

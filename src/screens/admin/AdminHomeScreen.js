@@ -7,9 +7,8 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerIt
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUser } from '../../actions/index'
-// import ExploreLogo from '../../../assets/logo/ExploreLogo'
 import {primaryColor} from '../../theme'
+import { getUserDetails } from '../../actions/userActions'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -44,10 +43,10 @@ const AdminHome = ({ navigation }) => {
   
 const AdminCustomDrawerContent = (props) => {
   const dispatch = useDispatch()
-  const { currentUser } = useSelector(state => state.userState)
+  const { user } = useSelector(state => state.userDetails)
   
   useEffect(() => {
-    dispatch(fetchUser())
+    dispatch(getUserDetails())
   },[dispatch])
   
   return (
