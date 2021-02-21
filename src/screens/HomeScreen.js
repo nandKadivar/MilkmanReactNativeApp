@@ -7,6 +7,7 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerIt
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
+import { listShops } from '../actions/shopActions'
 import { getUserDetails } from '../actions/userActions'
 import ExploreLogo from '../../assets/logo/ExploreLogo'
 import {primaryColor} from '../theme'
@@ -25,6 +26,17 @@ const logoutHandler = async ({ navigation }) => {
 }
 
 const Home = ({ navigation }) => {
+    const dispatch = useDispatch()
+    const { shops } = useSelector(state => state.shopDetails)
+    const { user } = useSelector(state => state.userDetails)
+
+    var count = 0
+  
+    useEffect(() => {
+      dispatch(listShops())
+      dispatch(getUserDetails())
+    }, [dispatch])
+  
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -32,15 +44,49 @@ const Home = ({ navigation }) => {
             <FontAwesome name='bars' size={24} />
           </TouchableOpacity>
         </View>
-        <View style={styles.mainContainer}>
-          <ExploreLogo />
-          <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
-            <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
-          </TouchableOpacity>
-        </View>
+          {
+            shops !== undefined ? (
+              user ? (
+                shops.map((x) => (
+                  x.cunstomer && (
+                    x.cunstomer.map((item) => {
+                      if (item.email === user.email && item.isConfirm === true) {
+                        count += 1
+                        return (
+                          <View style={styles.mainContainer}>
+                            <Text>{x.name}</Text>
+                          </View>
+                        )
+                      }
+                    })
+                  )  
+                ))
+              ) : (
+                <View style={styles.mainContainer}>
+                  <Text>User not found</Text>    
+                  {console.log('User not found')}
+                </View>
+              )
+            ) : (
+              <View style={styles.mainContainer}>
+                <Text>Shop not found</Text>
+                {console.log('Shop not found')}
+              </View>
+            )
+        }
+        {
+          count === 0 && (
+            <View style={styles.mainContainer}>
+              <ExploreLogo />
+              <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
+                <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
+              </TouchableOpacity>    
+            </View>
+          )
+        }
       </View>
-    );
-  }
+    )
+}
   
 const Notifications = () => {
     return (

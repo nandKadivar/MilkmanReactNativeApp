@@ -37,13 +37,17 @@ const Main = () => {
                 {/* <Tab.Screen name="" component={PaymentScreen} options={{ tabBarIcon: ({ color, size }) => (<FontAwesome name="credit-card" color={color} size={26}/>)}} /> */}
             </Tab.Navigator>
         )
-    } else {
+    } else if(user.isShopOwner === undefined || user.isShopOwner === false) {
         return (
             <Tab.Navigator tabBarOptions={{activeTintColor: primaryColor, inactiveTintColor: 'gray'}}>
                 <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ color, size }) => (<FontAwesome name="home" color={color} size={26}/>)}} />
                 <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarIcon: ({ color, size }) => (<FontAwesome name="wpexplorer" color={color} size={26}/>)}} />
                 <Tab.Screen name="Payment" component={PaymentScreen} options={{ tabBarIcon: ({ color, size }) => (<FontAwesome name="credit-card" color={color} size={26}/>)}} />
             </Tab.Navigator>
+        )
+    }else{
+        return (
+            <View></View>
         )
     }
 }

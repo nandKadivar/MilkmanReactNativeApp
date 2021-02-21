@@ -1,4 +1,4 @@
-import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS} from '../constants/index'
+import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS, SEND_SUBSCRIPTIONREQUEST_SUCCESS} from '../constants/index'
 import firebase from 'firebase'
 
 export const getUserDetails = () => async(dispatch) => {
@@ -25,6 +25,18 @@ export const getUserDetails = () => async(dispatch) => {
 
     } catch (error) {
         console.log(error)
+    }   
+}
+
+export const sendSubscriptionRequest = () => async(dispatch) => {
+    try {
+        await firebase.firestore().collection('users').where('email', '==', 'kadivarnand007@gmail.com').update({
+            cunstomer: [
+                
+            ]
+        })
+    } catch (error) {
+        console.log(error)
+        console.log("Fail to send subscription request .........")
     }
-    
 }

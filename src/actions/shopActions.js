@@ -19,9 +19,14 @@ export const listShops = () => async (dispatch) => {
         //         }              
         //     })
         let shops = []
-        const snapshot = await firebase.firestore().collection('users').where('isShopOwner', '==', true).get();
-        snapshot.forEach(doc => {
-            shops.push(doc.data())
+        const snapshot = await firebase.firestore().collection('users').where('isShopOwner', '==', true).get().then((snapshot) => {
+            // console.log(snapshot)
+            snapshot.forEach(doc => {
+                // console.log(doc.data())
+                var data = {...doc.data(),"id": doc.id}
+                shops.push(data)
+                // console.log(shops)
+            });    
         });
         // console.log(shops)
         dispatch({

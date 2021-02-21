@@ -10,6 +10,8 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import { Provider } from 'react-redux'
 import store from './src/store'
 
+// YellowBox ignoreWarnings(['Warning: ...']);
+
 const Stack = createNativeStackNavigator()
 enableScreens();
 
@@ -24,6 +26,7 @@ import SignupScreen from './src/screens/SignupScreen'
 import LoginScreen from './src/screens/LoginScreen'
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import Main from './src/screens/Main'
+import SubscribeScreen from './src/screens/SubscribeScreen'
 
 
 export default function App() {
@@ -86,6 +89,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Main" options={{ headerShown: false }} component={Main} />
+          <Stack.Screen name="Subscribe" options={{ headerShown: false }} component={SubscribeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -55,9 +55,9 @@ const AdminCustomDrawerContent = (props) => {
         {/* <DrawerItemList {...props} /> */}
           <View style={styles.mainContent}>
             <View style={styles.adminInfo}>
-              <View style={styles.avatar}><Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{currentUser.name[0]}</Text></View>
-              <Text style={{ fontSize: 22, marginTop: 5 }}>{ currentUser.name }</Text>
-              <Text style={{ fontSize: 12, marginTop: 2, color: '#9D9D9D' }}>{ currentUser.email }</Text>
+              <View style={styles.avatar}><Text style={{ color: '#fff', fontSize: 24, textTransform: 'uppercase' }}>{user.name[0]}</Text></View>
+              <Text style={{ fontSize: 22, marginTop: 5 }}>{ user.name }</Text>
+              <Text style={{ fontSize: 12, marginTop: 2, color: '#9D9D9D' }}>{ user.email }</Text>
             </View>
           </View>
           <DrawerItem
@@ -68,7 +68,7 @@ const AdminCustomDrawerContent = (props) => {
           <DrawerItem
             label="Notifications"
             icon={({ color }) => (<FontAwesome name="bell" color={color} size={20} />)}
-            onPress={() => props.navigation.navigate('AdminNotifications')}
+            onPress={() => props.navigation.navigate('AdminNotifications',{user})}
           />
         {/* <DrawerItem label="Close drawer" onPress={() => props.navigation.closeDrawer()} /> */}
           <DrawerItem
