@@ -19,11 +19,11 @@ const initialState = {
 
 export const userDetailsReducer= (state = {user: {}}, action) => {
     switch (action.type) {
-        // case USER_DETAILS_REQUESTED:
-        //     return {...state, loading: true}
+        case USER_DETAILS_REQUESTED:
+            return {...state, userLoading: true}
         case USER_DETAILS_SUCCESS:
             // console.log('Hiii');
-            return {loading: false, user: action.payload}
+            return {userLoading: false, user: action.payload}
         default:
             return state
     }

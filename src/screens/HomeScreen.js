@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { listShops } from '../actions/shopActions'
 import { getUserDetails } from '../actions/userActions'
 import ExploreLogo from '../../assets/logo/ExploreLogo'
+import LottieView from 'lottie-react-native';
 import {primaryColor} from '../theme'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -27,9 +28,9 @@ const logoutHandler = async ({ navigation }) => {
 
 const Home = ({ navigation }) => {
     const dispatch = useDispatch()
-    const { shops } = useSelector(state => state.shopDetails)
-    const { user } = useSelector(state => state.userDetails)
-
+    const { shops,shopsLoading } = useSelector(state => state.shopDetails)
+    const { user, userLoading } = useSelector(state => state.userDetails)
+    // console.log(loading)
     var count = 0
   
     useEffect(() => {
@@ -44,10 +45,10 @@ const Home = ({ navigation }) => {
             <FontAwesome name='bars' size={24} />
           </TouchableOpacity>
         </View>
-          {
+          {/* {
             shops !== undefined ? (
               user ? (
-                shops.map((x) => (
+                shops.map((x,key) => (
                   x.cunstomer && (
                     x.cunstomer.map((item) => {
                       if (item.email === user.email && item.isConfirm === true) {
@@ -73,7 +74,28 @@ const Home = ({ navigation }) => {
                 {console.log('Shop not found')}
               </View>
             )
-        }
+        } */}
+          {console.log(shopsLoading)}
+        {/* {
+          !shopsLoading && !userLoading ? (
+            shops.map((x) => (
+              x.cunstomer && (
+                x.cunstomer.map((item) => {
+                  if (item.email === user.email && item.isConfirm === true) {
+                    count += 1
+                    return (
+                      <View style={styles.mainContainer}>
+                        <Text>{x.name}</Text>
+                      </View>
+                    )
+                  }
+                })
+              ) 
+            ))  
+          ): (
+            <Text>Loading ...</Text>
+          )
+        } */}
         {
           count === 0 && (
             <View style={styles.mainContainer}>
@@ -82,6 +104,9 @@ const Home = ({ navigation }) => {
                 <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
               </TouchableOpacity>    
             </View>
+            // <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            //   <LottieView style={{width: 400,height: 400}} source={require('../../assets/data.json')} autoPlay loop />
+            // </View>
           )
         }
       </View>

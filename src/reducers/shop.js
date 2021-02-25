@@ -1,4 +1,4 @@
-import { LIST_SHOPS_SUCCESS } from '../constants/index'
+import { LIST_SHOPS_REQUESTED,LIST_SHOPS_SUCCESS } from '../constants/index'
 
 // const initialState = {
 //     shopsData: null
@@ -19,8 +19,10 @@ import { LIST_SHOPS_SUCCESS } from '../constants/index'
 
 export const listShopsReducer = (state = {shops: {}}, action) => {
     switch (action.type) {
+        case LIST_SHOPS_REQUESTED:
+            return {shopsLoading:true,...state}
         case LIST_SHOPS_SUCCESS:
-            return { loading:false, shops: action.payload}
+            return { shopsLoading:false, shops: action.payload}
         default:
             return state
     }

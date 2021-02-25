@@ -3,9 +3,9 @@ import firebase from 'firebase'
 
 export const getUserDetails = () => async(dispatch) => {
     try {
-        // dispatch({
-        //     type: USER_DETAILS_REQUESTED
-        // })
+        dispatch({
+            type: USER_DETAILS_REQUESTED
+        })
 
         await firebase.firestore()
         .collection("users")

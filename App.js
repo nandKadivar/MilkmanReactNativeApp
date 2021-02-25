@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import { Provider } from 'react-redux'
 import store from './src/store'
-
+import LottieView from 'lottie-react-native';
 // YellowBox ignoreWarnings(['Warning: ...']);
 
 const Stack = createNativeStackNavigator()
@@ -58,11 +58,10 @@ export default function App() {
   
   if (!loaded) {
     return (
-      <View style={{flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center'}}>
-        <Text>
-          Loading ...
-        </Text>
-      </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Loading ...</Text>
+         {/* <LottieView style={{width: 400,height: 400}} source={require('./assets/33371-milk-splash.json')} autoplay loop /> */}
+       </View>
     )
   }
 

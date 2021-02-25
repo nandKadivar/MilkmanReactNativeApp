@@ -20,6 +20,30 @@ const AdminNotificationsScreen = ({navigation}) => {
         dispatch(getUserDetails())
     }, [dispatch])
     
+    const acceptReqHandler = (item) => {
+        
+    }
+
+    const deleteReqHandler = async (item) => {
+        firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
+            cunstomer: []
+        })
+        // console.log(item.email)
+        // const snapshot = await firebase.firestore().collection('users').where('email', '==', item.email).get().then((snapshot) => {
+        //     console.log(snapshot.id())
+        // })
+        // var userId
+        // await firebase.firestore().collection('users').where('email', '==', item.email).get().then((snapshot) => {
+        //     snapshot.forEach((doc) => {
+        //         userId = doc.id
+        //     })
+        // })
+
+        // await firebase.firestore().collection('users').doc(userId).update({
+        //     message: 'hiii'
+        // })
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -51,17 +75,24 @@ const AdminNotificationsScreen = ({navigation}) => {
                                             style={StyleSheet.absoluteFillObject}
                                             loadingEnabled={true}
                                             customMapStyle={mapStyle}
-                                            region={region}
+                                            region={
+                                                {
+                                                    latitude: item.address.latitude,
+                                                    longitude: item.address.longitude,
+                                                    latitudeDelta: 0.001,
+                                                    longitudeDelta: 0.025
+                                                }
+                                            }
                                         >   
                                             <MapView.Marker
                                                 image={require('../../../assets/images/map_marker.png')}
-                                                coordinate={region}
+                                                coordinate={item.address}
                                             />
                                         </MapView>
                                     </View>
                                     <View style={styles.notificationCardFooter}>
-                                        <TouchableOpacity style={styles.acceptButton}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
-                                        <TouchableOpacity style={styles.deleteButton}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
+                                        <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
+                                        <TouchableOpacity style={styles.deleteButton} onPress={()=> deleteReqHandler(item)}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
                                     </View>
                                 </View>
                             )

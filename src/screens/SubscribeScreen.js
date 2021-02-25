@@ -8,6 +8,7 @@ import { getUserDetails } from '../actions/userActions'
 import firebase from 'firebase'
 import MapView, { Callout } from 'react-native-maps'
 import { region, mapStyle } from '../components/DairyShopData'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
 // import { getDistance } from 'geolib';
@@ -16,12 +17,14 @@ const windowHeight = Dimensions.get('window').height
 
 const SubscribeScreen = (props) => {
     const x = props.route.params.x
+
     const [address,setAddress] = useState(null)
     const [location, setLocation] = useState(null)
+    const [qty,setQty] = useState(1)
 
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.userDetails)
-    
+    // console.log(x)
     useEffect(() => {
         dispatch(getUserDetails())
         getUserLocation()
@@ -31,13 +34,13 @@ const SubscribeScreen = (props) => {
         if (user) {
             // console.log(user.uid)
             try {
-                console.log(x.email)
-                await firebase.firestore().collection('users').where('email','==',x.email).update({
+                console.log(x.id)
+                await firebase.firestore().collection('users').doc(x.id).update({
                     cunstomer: [
                         {
                             email: user.email,
                             name: user.name,
-                            qty: 2,
+                            qty: qty,
                             address: {
                                 latitude: address.latitude,
                                 longitude: address.longitude
@@ -45,10 +48,16 @@ const SubscribeScreen = (props) => {
                             isConfirm: false
                         }
                     ]
+                    // price: 1
                 })
+                // const message= {flag: true}
+                props.navigation.navigate('Explore')
+                // props.navigation.navigate('Explore')
             } catch (error) {
                 console.log(error)
                 console.log("Fail to send subscription request .........")
+                // const message= {flag: false}
+                props.navigation.navigate('Explore')
             }
         }
     }
@@ -61,7 +70,18 @@ const SubscribeScreen = (props) => {
         } else {
             const {coords} = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
             setLocation(coords)
+            setAddress({latitude: coords.latitude,longitude: coords.longitude})
             // console.log(JSON.stringify(coords))
+        }
+    }
+
+    const plusQtyHandler = () => {
+        setQty(qty+0.5)
+    }
+
+    const minusQtyHandler = () => {
+        if (qty > 1) {
+            setQty(qty-0.5)
         }
     }
 
@@ -81,7 +101,7 @@ const SubscribeScreen = (props) => {
                     }}
                     onRegionChange={(region) => {
                         setAddress(region)
-                        console.log(location)
+                        // console.log(location)
                     }}
                 >   
                     {/* <MapView.Marker
@@ -102,6 +122,15 @@ const SubscribeScreen = (props) => {
                 <View style={styles.row}>
                     <Text style={styles.text}>Price:</Text>
                     <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.text}>Set qty in liter:</Text>
+                    {/* <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text> */}
+                    <View style={styles.qtyContainer}>
+                        <TouchableOpacity style={styles.plus} onPress={minusQtyHandler}><FontAwesome name='minus' color={'#f7f7f7'} size={22} /></TouchableOpacity>
+                            <Text style={styles.qtyText}>{ qty.toFixed(1) }</Text>
+                        <TouchableOpacity style={styles.plus} onPress={plusQtyHandler}><FontAwesome name='plus' color={'#f7f7f7'} size={22} /></TouchableOpacity>
+                    </View>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={sendRequestHandler}><Text style={styles.buttonText}>Subscribe Supplier</Text></TouchableOpacity>
             </View>
@@ -163,6 +192,27 @@ const styles = StyleSheet.create({
     mapContainer: {
         width: '100%',
         height: 400
+    },
+    qtyContainer: {
+        width: '40%',
+        paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
+    plus: {
+        backgroundColor: primaryColor,
+        borderRadius: 5,
+        elevation: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 8
+    },
+    qtyText: {
+        fontSize: 26,
+        color: primaryColor
+        // paddingHorizontal: 10
     },
     button: {
         marginTop: 10,

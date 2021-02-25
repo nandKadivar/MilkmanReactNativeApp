@@ -115,9 +115,6 @@ const ExploreScreen = ({navigation}) => {
                     (null)
                 }
             </MapView>
-            {/* <View style={styles.searchbarContainer}>
-                <InputField icon="location-arrow" iconSize="24" onChangeText={searchHandler} placeholder="Enter your city name" />
-            </View> */}
             <TouchableOpacity onPress={viewDetailsHandler} style={{
                 position: 'absolute',
                 bottom: expanded ? height/1.1 : height/3.2,
@@ -139,7 +136,6 @@ const ExploreScreen = ({navigation}) => {
                 pagingEnabled
                 style={styles.scrollview}
             >
-                {/* <TouchableOpacity> */}
                 {
                     location !== null && shops !== undefined ?
                     shops.map((x) => {
@@ -162,54 +158,27 @@ const ExploreScreen = ({navigation}) => {
                                     </View>
                                     <View style={styles.cardFooterContainer}>
                                         <Text style={{ fontSize: 24, fontWeight: 'bold' }}><MaterialCommunityIcons name='currency-inr' size={24} /> {x.price} <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
-                                        {/* {console.log(user)} */}
-                                        {/* {
-                                            x.cunstomer ? 
-                                                // x.cunstomer.forEach((item)=>
-                                                //     item.email === user.email ? (
-                                                //         item.isConfirm === false ? (
-                                                //             <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Cancel Req...</Text></TouchableOpacity>
-                                                //         ) : (
-                                                //             <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribed</Text></TouchableOpacity>
-                                                //         )
-                                                //     ) : (null)
-                                                // )
-                                                // ) : (
-                                                // <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>
-                                                x.cunstomer.map((item) => {
-                                                    console.log(item)
-                                                })
-                                            
-                                            // console.log(x.cunstomer)
-                                            // x.cunstomer.map(c => {
-                                            //     c.email
-                                            // })
-                                            // console.log(x.cunstomer)
-                                        } */}
-                                        {
-                                            x.cunstomer &&
-                                            x.cunstomer.map((item) => {
+                                        {   
+                                            x.cunstomer ?
+                                            x.cunstomer.map((item,key) => {
                                                 count = 0
+                                                // console.log(item.email)
                                                 if (item.email === user.email) {
                                                     count += 1
                                                     if (item.isConfirm === false) {
                                                         return (
-                                                            // <Text>Cancel Req</Text>
                                                             <TouchableOpacity onPress={() => {onCancelHandler(x)}} style={styles.cancelButton}><Text style={styles.cancelButtonText}>Cancel Req...</Text></TouchableOpacity>
                                                         )
                                                     } else {
                                                         return (
-                                                            // <Text>Subscribed</Text>
-                                                            <View style={styles.subscribed}><FontAwesome name='check' style={{marginRight: 5}} size={18} color={'#5f8d69'} /><Text style={styles.subscribedText}>Subscribed</Text></View>
+                                                            <View style={styles.subscribed}><FontAwesome name='check' style={{marginRight: 5}} size={18} color={'#2d567f'} /><Text style={styles.subscribedText}>Subscribed</Text></View>
                                                         )
                                                     }
                                                 }
                                             })
-                                        }
-                                        {count === 0 && (
-                                            // <Text>subscribe</Text>
+                                            :
                                             <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>
-                                        )}
+                                        }
                                     </View>
                                 </View>
                             )
@@ -218,7 +187,6 @@ const ExploreScreen = ({navigation}) => {
                     :
                         (null)
                     }
-                {/* </TouchableOpacity> */}
             </Animated.ScrollView>
         </SafeAreaView>
     )
@@ -368,9 +336,8 @@ const styles = StyleSheet.create({
         width: width/2.2,
         height: height/20,
         borderRadius: 0,
-        backgroundColor: '#d4edda',
-        // backgroundColor: '#DEE7F4',
-        // backgroundColor: primaryColor,
+        // backgroundColor: '#d4edda',
+        backgroundColor: '#cbe5fe',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -378,7 +345,8 @@ const styles = StyleSheet.create({
     subscribedText: {
         fontSize: 15,
         textTransform: 'uppercase',
-        color: '#5f8d69',
+        // color: '#5f8d69',
+        color: '#2d567f',
         fontWeight: 'bold',
         textAlign: 'center'
     },
