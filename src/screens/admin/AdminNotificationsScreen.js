@@ -21,7 +21,15 @@ const AdminNotificationsScreen = ({navigation}) => {
     }, [dispatch])
     
     const acceptReqHandler = (item) => {
-        
+        // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
+        const firestore = firebase.firestore()
+        const col = firestore.collection('users')
+        const query = col.where('cunstomer', '', '')
+        query.get().then(snapshot => {
+            snapshot.docs.forEach(doc => {
+                console.log(doc.id,doc.data())
+            })
+        })
     }
 
     const deleteReqHandler = async (item) => {

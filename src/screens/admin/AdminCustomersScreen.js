@@ -6,7 +6,6 @@ const AdminCustomersScreen = () => {
     return (
         <View style={styles.container}>
             <Text>Admin Customer Screen</Text>
-            {/* <Map /> */}
         </View>
     )
 }

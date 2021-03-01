@@ -20,7 +20,7 @@ import { LIST_SHOPS_REQUESTED,LIST_SHOPS_SUCCESS } from '../constants/index'
 export const listShopsReducer = (state = {shops: {}}, action) => {
     switch (action.type) {
         case LIST_SHOPS_REQUESTED:
-            return {shopsLoading:true,...state}
+            return {shopsLoading:true}
         case LIST_SHOPS_SUCCESS:
             return { shopsLoading:false, shops: action.payload}
         default:
