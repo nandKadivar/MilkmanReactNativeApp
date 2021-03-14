@@ -7,7 +7,8 @@ import {createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerIt
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
-import {primaryColor} from '../../theme'
+import { theme } from '../../theme'
+var primaryColor = theme.primaryColor
 import { getUserDetails } from '../../actions/userActions'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -151,6 +152,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-
+  }
 });

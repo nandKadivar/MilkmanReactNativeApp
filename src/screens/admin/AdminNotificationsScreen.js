@@ -6,8 +6,10 @@ import MapView, { Callout } from 'react-native-maps'
 import { region, markers, mapStyle } from '../../components/DairyShopData'
 import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import {primaryColor} from '../../theme'
+import { theme } from '../../theme'
+var primaryColor = theme.primaryColor
 import { getUserDetails } from '../../actions/userActions'
+import { ScrollView } from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -20,16 +22,56 @@ const AdminNotificationsScreen = ({navigation}) => {
         dispatch(getUserDetails())
     }, [dispatch])
     
-    const acceptReqHandler = (item) => {
+    const acceptReqHandler = async (item) => {
         // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
-        const firestore = firebase.firestore()
-        const col = firestore.collection('users')
-        const query = col.where('cunstomer', '', '')
-        query.get().then(snapshot => {
-            snapshot.docs.forEach(doc => {
-                console.log(doc.id,doc.data())
-            })
-        })
+        // const firestore = firebase.firestore()
+        // const col = firestore.collection('users')
+        // const query = col.where('cunstomer', 'array-contains-any', 'item.email')
+        // query.get().then(snapshot => {
+        //     snapshot.docs.forEach(doc => {
+        //         console.log(doc.id,doc.data())
+        //     })
+        // })
+
+        var currentUserId = firebase.auth().currentUser.uid
+        // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
+        // const firestore = firebase.firestore()
+        // const col = firestore.collection('users')
+        // const query = col.where('AhMaxiyWxQeOLVd7DgvOIUKNGCs1/cunstomer', 'array-contains-any', 'item.email')
+        // query.get().then(snapshot => {
+        //     snapshot.docs.forEach(doc => {
+        //         console.log(doc.id,doc.data())
+        //     })
+        // })
+        // await firebase.firestore().collection('users').doc(currentUserId).update({
+        //     cunstomer: firebase.firestore.FieldValue.arrayRemove({
+        //         email: user.email,
+        //         name: user.name,
+        //         qty: qty,
+        //         address: {
+        //             latitude: address.latitude,
+        //             longitude: address.longitude
+        //         },
+        //         isConfirm: false
+        //     })
+        // })
+
+        await firebase.firestore().collection('users').doc(currentUserId).update({
+            cunstomer: [
+                {
+                    email: item.email,
+                    name: item.name,
+                    qty: item.qty,
+                    address: {
+                        latitude: item.address.latitude,
+                        longitude: item.address.longitude
+                    },
+                    isConfirm: true
+                }
+            ]
+        });
+
+        navigation.navigate('Customers')
     }
 
     const deleteReqHandler = async (item) => {
@@ -60,53 +102,55 @@ const AdminNotificationsScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.mainContainer}>
-                {
-                    user.cunstomer && (
-                        user.cunstomer.map((item) => (
-                            // <Text>{item.name}</Text>
-                            item.isConfirm === false && (
-                                <View style={styles.notificationCard}>
-                                    <View style={styles.row}>
-                                        <Text style={styles.notificationCardText}>Name: </Text>
-                                        <Text style={styles.notificationCardSubtext}>{item.name}</Text>
-                                    </View>
-                                    <View style={styles.row}>
-                                        <Text style={styles.notificationCardText}>Email: </Text>
-                                        <Text style={styles.notificationCardSubtext}>{item.email}</Text>
-                                    </View>
-                                    <View style={styles.row}>
-                                        <Text style={styles.notificationCardText}>Qty: </Text>
-                                        <Text style={styles.notificationCardSubtext}>{item.qty} liter</Text>
-                                    </View>
-                                    <View style={styles.mapContainer}>
-                                        <MapView
-                                            style={StyleSheet.absoluteFillObject}
-                                            loadingEnabled={true}
-                                            customMapStyle={mapStyle}
-                                            region={
-                                                {
-                                                    latitude: item.address.latitude,
-                                                    longitude: item.address.longitude,
-                                                    latitudeDelta: 0.001,
-                                                    longitudeDelta: 0.025
+                <ScrollView>
+                    {
+                        user.cunstomer && (
+                            user.cunstomer.map((item) => (
+                                // <Text>{item.name}</Text>
+                                item.isConfirm === false && (
+                                    <View style={styles.notificationCard}>
+                                        <View style={styles.row}>
+                                            <Text style={styles.notificationCardText}>Name: </Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.name}</Text>
+                                        </View>
+                                        <View style={styles.row}>
+                                            <Text style={styles.notificationCardText}>Email: </Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.email}</Text>
+                                        </View>
+                                        <View style={styles.row}>
+                                            <Text style={styles.notificationCardText}>Qty: </Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.qty} liter</Text>
+                                        </View>
+                                        <View style={styles.mapContainer}>
+                                            <MapView
+                                                style={StyleSheet.absoluteFillObject}
+                                                loadingEnabled={true}
+                                                customMapStyle={mapStyle}
+                                                region={
+                                                    {
+                                                        latitude: item.address.latitude,
+                                                        longitude: item.address.longitude,
+                                                        latitudeDelta: 0.001,
+                                                        longitudeDelta: 0.025
+                                                    }
                                                 }
-                                            }
-                                        >   
-                                            <MapView.Marker
-                                                image={require('../../../assets/images/map_marker.png')}
-                                                coordinate={item.address}
-                                            />
-                                        </MapView>
+                                            >   
+                                                <MapView.Marker
+                                                    image={require('../../../assets/images/map_marker.png')}
+                                                    coordinate={item.address}
+                                                />
+                                            </MapView>
+                                        </View>
+                                        <View style={styles.notificationCardFooter}>
+                                            <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
+                                            <TouchableOpacity style={styles.deleteButton} onPress={()=> deleteReqHandler(item)}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
+                                        </View>
                                     </View>
-                                    <View style={styles.notificationCardFooter}>
-                                        <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
-                                        <TouchableOpacity style={styles.deleteButton} onPress={()=> deleteReqHandler(item)}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
-                                    </View>
-                                </View>
-                            )
-                        ))
-                    )
-                }
+                                )
+                            ))
+                        )
+                    }
+                </ScrollView>
             </View>
         </View>
     )
@@ -137,6 +181,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         width: windowWidth / 1.1,
         padding: 15,
+        marginVertical: 15,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',

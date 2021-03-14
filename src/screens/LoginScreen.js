@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Animated} from 'r
 import UserLogo from '../../assets/logo/UserLogo';
 import firebase from '@firebase/app'
 import InputField from '../components/InputField'
-import {primaryColor} from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -11,6 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 const LoginScreen = ({navigation}) => {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
+    const [error, setError] = useState(null)
 
     const emailChangeHandler = (value) => {
         setEmail(value)
@@ -26,6 +28,7 @@ const LoginScreen = ({navigation}) => {
             })
             .catch((error) => {
                 console.log(error)
+                setError(error.message)
             })
     }
     
@@ -42,6 +45,13 @@ const LoginScreen = ({navigation}) => {
                 <InputField icon="lock" secureTextEntry="true" placeholder='Password' onChangeText={passwordChangeHandler} />
                 <Text></Text>
             </View>
+            {
+                error && (
+                    <View style={styles.errorLabel}>
+                        <Text style={styles.errorLabelText}>{ error }</Text>
+                    </View>
+                )
+            }
             <View style={styles.forgotPasswordContainer}>
                 <Text style={styles.forgotPasswordLink} onPress={() => {navigation.navigate('ForgotPassword')}}>Forgot Password?</Text>
             </View>
@@ -114,4 +124,17 @@ const styles = StyleSheet.create({
         // color: '#82c5ab'
         color: primaryColor
     },
+    errorLabel: {
+        marginTop: 5,
+        marginBottom: 10,
+        borderRadius: 5,
+        width: windowWidth / 1.2,
+        height: windowHeight / 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f7D7DA'
+    },
+    errorLabelText: {
+        color: '#814147'
+    }
   });

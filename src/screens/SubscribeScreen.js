@@ -1,7 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import {SafeAreaView} from 'react-navigation'
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
-import { primaryColor } from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 import * as Location from 'expo-location'
 import { useSelector, useDispatch } from 'react-redux'
 import { getUserDetails } from '../actions/userActions'
@@ -9,8 +10,10 @@ import firebase from 'firebase'
 import MapView, { Callout } from 'react-native-maps'
 import { region, mapStyle } from '../components/DairyShopData'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import DatePicker from 'react-native-datepicker'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
+import { useFonts } from 'expo-font';
 // import { getDistance } from 'geolib';
 // import Rating from '../components/Rating'
 // import InputField from '../components/InputField'
@@ -20,15 +23,20 @@ const SubscribeScreen = (props) => {
 
     const [address,setAddress] = useState(null)
     const [location, setLocation] = useState(null)
-    const [qty,setQty] = useState(1)
-
+    const [date,setDate] = useState("11-03-2021")
+    const [qty, setQty] = useState(1)
+   
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.userDetails)
     // console.log(x)
     useEffect(() => {
         dispatch(getUserDetails())
         getUserLocation()
-    },[])
+    }, [])
+    
+    let [fontsLoaded] = useFonts({
+        'Impact': require('../../assets/fonts/impact.ttf'),
+    });
 
     const sendRequestHandler = async() => {
         if (user) {
@@ -36,18 +44,28 @@ const SubscribeScreen = (props) => {
             try {
                 console.log(x.id)
                 await firebase.firestore().collection('users').doc(x.id).update({
-                    cunstomer: [
-                        {
-                            email: user.email,
-                            name: user.name,
-                            qty: qty,
-                            address: {
-                                latitude: address.latitude,
-                                longitude: address.longitude
-                            },
-                            isConfirm: false
-                        }
-                    ]
+                    // cunstomer: [
+                    //     {
+                    //         email: user.email,
+                    //         name: user.name,
+                    //         qty: qty,
+                    //         address: {
+                    //             latitude: address.latitude,
+                    //             longitude: address.longitude
+                    //         },
+                    //         isConfirm: false
+                    //     }
+                    // ]
+                    cunstomer: firebase.firestore.FieldValue.arrayUnion({
+                        email: user.email,
+                        name: user.name,
+                        qty: qty,
+                        address: {
+                            latitude: address.latitude,
+                            longitude: address.longitude
+                        },
+                        isConfirm: false
+                    })
                     // price: 1
                 })
                 // const message= {flag: true}
@@ -123,6 +141,36 @@ const SubscribeScreen = (props) => {
                     <Text style={styles.text}>Price:</Text>
                     <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text>
                 </View>
+                {/* <View style={styles.row}>
+                    <Text style={styles.text}>Select Starting date: </Text>
+                    <DatePicker
+                        style={styles.datePicker}
+                        date={date}
+                        mode="date"
+                        placeholder="select date"
+                        format="DD-MM-YYYY"
+                        minDate="11-03-2021"
+                        maxDate="15-03-2021"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        iconComponent={<FontAwesome name="calendar" style={{position: 'absolute',left:20}} size={20} color={primaryColor} />}
+                        customStyles={{
+                            dateInput: {
+                                marginLeft: 27,
+                                borderWidth: 0
+                            },
+                            dateTouchBody: {
+                                backgroundColor: '#ececec',
+                                borderRadius: 5,
+                            },
+                        }}
+                        onDateChange={(date) => {setDate(date)}}
+                    />
+                </View> */}
+                {/* <View style={styles.row}>
+                    <Text style={styles.text}>Schedule:</Text>
+                    <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text>
+                </View> */}
                 <View style={styles.row}>
                     <Text style={styles.text}>Set qty in liter:</Text>
                     {/* <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text> */}
@@ -229,5 +277,8 @@ const styles = StyleSheet.create({
         color: primaryColor,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    datePicker: {
+        borderWidth: 0
     }
 });

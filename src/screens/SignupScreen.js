@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-nativ
 import RegisterLogo from '../../assets/logo/RegisterLogo';
 import firebase from '@firebase/app'
 import InputField from '../components/InputField'
-import {primaryColor} from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -11,7 +12,8 @@ const windowHeight = Dimensions.get('window').height;
 const SignupScreen = ({navigation}) => {
     const [name,setName] = useState('')
     const [email,setEmail] = useState('')
-    const [password,setPassword] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState(null)
 
     const nameChangeHandler = (value) => {
         setName(value)
@@ -24,6 +26,7 @@ const SignupScreen = ({navigation}) => {
     }
 
     const signupHandler = () => {
+
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((result) => {
                 firebase.firestore().collection("users")
@@ -34,7 +37,8 @@ const SignupScreen = ({navigation}) => {
                 // console.log(result)
             })
             .catch((err) => {
-            console.log(err)
+                console.log(err)
+                setError(err.message)
         })
         // console.log(name)
         // console.log(email)
@@ -58,6 +62,13 @@ const SignupScreen = ({navigation}) => {
                 <InputField icon="lock" secureTextEntry="true" placeholder='Password' onChangeText={passwordChangeHandler} />
                 <Text></Text>
             </View>
+            {
+                error && (
+                    <View style={styles.errorLabel}>
+                        <Text style={styles.errorLabelText}>{ error }</Text>
+                    </View>
+                )
+            }
             <TouchableOpacity style={styles.button} onPress={ signupHandler }><Text style={styles.buttonText}>Create Account</Text></TouchableOpacity>
             <View style={styles.linksContainer}>
                 <Text style={{color: '#000'}}>Already have an account? <Text style={styles.links} onPress={() => navigation.replace('Login')}>Login</Text></Text>
@@ -111,5 +122,18 @@ const styles = StyleSheet.create({
     links: {
         // color: '#82c5ab'
         color: primaryColor
+    },
+    errorLabel: {
+        marginTop: 5,
+        marginBottom: 10,
+        borderRadius: 5,
+        width: windowWidth / 1.2,
+        height: windowHeight / 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f7D7DA'
+    },
+    errorLabelText: {
+        color: '#814147'
     }
   });

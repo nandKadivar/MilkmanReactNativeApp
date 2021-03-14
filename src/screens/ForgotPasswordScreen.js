@@ -2,7 +2,8 @@ import React,{useState} from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native'
 import InputField from '../components/InputField'
 import ForgotPasswordLogo from '../../assets/logo/ForgotPasswordLogo'
-import { primaryColor } from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 import firebase from '@firebase/app'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
@@ -11,6 +12,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email,setEmail] = useState('')
+    const [error, setError] = useState(null)
     
     const emailChangeHandler = (value) => {
         setEmail(value)
@@ -22,6 +24,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             navigation.replace('Login')
         } catch (err) {
             console.log(err)
+            setError(err.message)
         }
     }
 
@@ -34,6 +37,13 @@ const ForgotPasswordScreen = ({ navigation }) => {
                 <InputField icon="envelope" placeholder='Email' onChangeText={emailChangeHandler} />
                 <Text></Text>
             </View>
+            {
+                error && (
+                    <View style={styles.errorLabel}>
+                        <Text style={styles.errorLabelText}>{ error }</Text>
+                    </View>
+                )
+            }
             <TouchableOpacity style={styles.button} onPress={ forgotPasswordHandler }><Text style={styles.buttonText}><FontAwesome name="paper-plane" color={'#fff'} style={{transform: [{rotateY: '90deg'}]}} size={20} /> Send Email</Text></TouchableOpacity>
         </View>
     )
@@ -81,5 +91,18 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'flex-start'
+    },
+    errorLabel: {
+        marginTop: 5,
+        marginBottom: 10,
+        borderRadius: 5,
+        width: windowWidth / 1.2,
+        height: windowHeight / 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f7D7DA'
+    },
+    errorLabelText: {
+        color: '#814147'
     }
 });

@@ -1,4 +1,4 @@
-import { USER_STATE_CHANGE, USER_DETAILS_REQUESTED, USER_DETAILS_SUCCESS} from '../constants/index'
+import { USER_STATE_CHANGE, USER_DETAILS_REQUESTED, USER_DETAILS_SUCCESS,CHANGE_THEME} from '../constants/index'
 
 const initialState = {
     currentUser: null
@@ -24,6 +24,15 @@ export const userDetailsReducer= (state = {user: {}}, action) => {
         case USER_DETAILS_SUCCESS:
             // console.log('Hiii');
             return {userLoading: false, user: action.payload}
+        default:
+            return state
+    }
+}
+
+export const changeThemeReducer = (state = { mode: {} }, action) => {
+    switch (action.type) {
+        case CHANGE_THEME:
+            return {mode: action.payload}
         default:
             return state
     }

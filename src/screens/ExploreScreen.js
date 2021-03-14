@@ -11,7 +11,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getUserDetails } from '../actions/userActions'
 import { listShops } from '../actions/shopActions'
 import { getDistance } from 'geolib';
-import { primaryColor } from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 
 const height = Dimensions.get('window').height
 const width = Dimensions.get('window').width
@@ -22,7 +23,7 @@ const ExploreScreen = ({navigation}) => {
     const [expanded, setExpanded] = useState(false)
     const dispatch = useDispatch()
     // const {currentUser} = useSelector(state => state.userState)
-    const { shops } = useSelector(state => state.shopDetails)
+    const { shops, shopsLoading } = useSelector(state => state.shopDetails)
     const { user } = useSelector(state => state.userDetails)
     
     var count = 0
@@ -78,7 +79,7 @@ const ExploreScreen = ({navigation}) => {
                 // }}
                 region={region}
             >
-                {   location !== null ?
+                {   location !== null && !shopsLoading ?
                     shops.map(x => {
                         var distance = getDistance(
                             { latitude: x.address.latitude, longitude: x.address.longitude },
@@ -158,10 +159,10 @@ const ExploreScreen = ({navigation}) => {
                                     </View>
                                     <View style={styles.cardFooterContainer}>
                                         <Text style={{ fontSize: 24, fontWeight: 'bold' }}><MaterialCommunityIcons name='currency-inr' size={24} /> {x.price} <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
-                                        {   
+                                        {  
                                             x.cunstomer ?
                                             x.cunstomer.map((item,key) => {
-                                                count = 0
+                                                count = 1
                                                 // console.log(item.email)
                                                 if (item.email === user.email) {
                                                     count += 1
@@ -176,9 +177,15 @@ const ExploreScreen = ({navigation}) => {
                                                     }
                                                 }
                                             })
-                                            :
-                                            <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>
+                                            : (   
+                                                <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>
+                                            )
                                         }
+                                        {/* {
+                                            count == 1 && (
+                                                <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>  
+                                            )
+                                        } */}
                                     </View>
                                 </View>
                             )

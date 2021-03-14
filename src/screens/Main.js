@@ -9,7 +9,8 @@ import AdminHomeScreen from './admin/AdminHomeScreen'
 import AdminCustomersSceen from './admin/AdminCustomersScreen'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import {primaryColor} from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 const Tab = createBottomTabNavigator();
 
 const Main = () => {

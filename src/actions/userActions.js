@@ -1,4 +1,4 @@
-import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS, SEND_SUBSCRIPTIONREQUEST_SUCCESS} from '../constants/index'
+import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS, SEND_SUBSCRIPTIONREQUEST_SUCCESS, CHANGE_THEME} from '../constants/index'
 import firebase from 'firebase'
 
 export const getUserDetails = () => async(dispatch) => {
@@ -39,4 +39,11 @@ export const sendSubscriptionRequest = () => async(dispatch) => {
         console.log(error)
         console.log("Fail to send subscription request .........")
     }
+}
+
+export const changeAppTheme = () => (dispatch) => {
+    dispatch({
+        type: CHANGE_THEME,
+        payload: true
+    })
 }

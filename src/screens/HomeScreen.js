@@ -8,17 +8,19 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
 import { listShops } from '../actions/shopActions'
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails, changeAppTheme } from '../actions/userActions'
 import ExploreLogo from '../../assets/logo/ExploreLogo'
 import LottieView from 'lottie-react-native';
-import { primaryColor } from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 import { LineChart } from 'react-native-chart-kit'
 // import { Font } from 'expo'
 import { useFonts } from 'expo-font';
 import { Agenda, Calendar } from 'react-native-calendars'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { set } from 'react-native-reanimated';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
 
 const logoutHandler = async ({ navigation }) => {
   await firebase.auth().signOut()
@@ -34,10 +36,11 @@ const Home = ({ navigation }) => {
     const dispatch = useDispatch()
     const { shops,shopsLoading } = useSelector(state => state.shopDetails)
     const { user, userLoading } = useSelector(state => state.userDetails)
-    const [supplier,setSupplier] = useState(0)
+    const { mode } = useSelector(state => state.DarkTheme)
+    const [supplier, setSupplier] = useState(0)
     // console.log(loading)
     var count = 0
-  
+    console.log(mode)
     let [fontsLoaded] = useFonts({
       'Impact': require('../../assets/fonts/impact.ttf'),
     });
@@ -45,12 +48,8 @@ const Home = ({ navigation }) => {
     useEffect(() => {
       dispatch(listShops())
       dispatch(getUserDetails())
-      // Font.loadAsync({
-      //   'Impact': require('../../assets/fonts/impact.ttf')
-      // })
     }, [dispatch])
   
-  console.log(shopsLoading)
   if (shopsLoading === false) {
     // console.log(shops)
     var suppliers = []
@@ -126,7 +125,6 @@ const Home = ({ navigation }) => {
                     }
                   }}
                 /> */}
-
               </View>
             </View>
           </View>
@@ -134,23 +132,24 @@ const Home = ({ navigation }) => {
       )
     } else {
       return (  
-        <View style={styles.mainContainer}>
-          <ExploreLogo />
-          <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
-            <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
-          </TouchableOpacity>    
+        <View style={styles.Container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+              <FontAwesome name='bars' size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={{width: windowWidth,height: '95%',justifyContent: 'center',alignItems: 'center'}}>
+            <ExploreLogo />
+            <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
+              <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
+            </TouchableOpacity>    
+          </View>
         </View>
       )
     }
-
-    
   } else {
     return (
       <View style={styles.mainContainer}>
-        {/* <ExploreLogo />
-        <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
-          <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
-        </TouchableOpacity> */}
         <Text>Loading ...</Text>
       </View>
     )
@@ -249,7 +248,8 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     width: windowWidth,
-    height: '100%',
+    height: '95%',
+    // backgroundColor: '#fff',
     justifyContent: 'flex-start',
     alignItems: 'center'
   },

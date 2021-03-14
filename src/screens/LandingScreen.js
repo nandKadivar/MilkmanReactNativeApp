@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, Button, Dimensions, TouchableOpacity} from 'react-native';
-import {primaryColor} from '../theme'
+import { theme } from '../theme'
+var primaryColor = theme.primaryColor
 const windowWidth = Dimensions.get('window').width;
 
 const LandingScreen = ({navigation}) => {
