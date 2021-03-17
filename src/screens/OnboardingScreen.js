@@ -39,7 +39,7 @@ const OnboardingScreen = ({navigation}) => {
                 },
                 {
                     // backgroundColor: '#fff',
-                    backgroundColor: '#02D892',
+                    // backgroundColor: '#02D892',
                     backgroundColor: '#2A2D4E',
                     // backgroundColor: '#6C72B7',
                     // backgroundColor: '#19456b',

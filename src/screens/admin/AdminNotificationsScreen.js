@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useState,useEffect} from 'react'
 import {SafeAreaView} from 'react-navigation'
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions,ImageBackground} from 'react-native';
 import firebase from '@firebase/app'
@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { theme } from '../../theme'
 var primaryColor = theme.primaryColor
-import { getUserDetails } from '../../actions/userActions'
+import { getUserDetails, getSubscriptions } from '../../actions/userActions'
 import { ScrollView } from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,11 +17,13 @@ const AdminNotificationsScreen = ({navigation}) => {
     // const x = props.route.params.x
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.userDetails)
+    const { subscriptionLoading,subscribers } = useSelector(state => state.subscriptions)
   
     useEffect(() => {
         dispatch(getUserDetails())
+        dispatch(getSubscriptions())
     }, [dispatch])
-    
+
     const acceptReqHandler = async (item) => {
         // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
         // const firestore = firebase.firestore()
@@ -75,9 +77,9 @@ const AdminNotificationsScreen = ({navigation}) => {
     }
 
     const deleteReqHandler = async (item) => {
-        firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
-            cunstomer: []
-        })
+        // firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
+        //     cunstomer: []
+        // })
         // console.log(item.email)
         // const snapshot = await firebase.firestore().collection('users').where('email', '==', item.email).get().then((snapshot) => {
         //     console.log(snapshot.id())
@@ -102,44 +104,49 @@ const AdminNotificationsScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.mainContainer}>
+                {/* {console.log(subscription)} */}
                 <ScrollView>
                     {
-                        user.cunstomer && (
-                            user.cunstomer.map((item) => (
-                                // <Text>{item.name}</Text>
+                        subscriptionLoading == false && (
+                            subscribers.map((item, key) => (
                                 item.isConfirm === false && (
                                     <View style={styles.notificationCard}>
                                         <View style={styles.row}>
                                             <Text style={styles.notificationCardText}>Name: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.name}</Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.instruction}</Text>
                                         </View>
                                         <View style={styles.row}>
                                             <Text style={styles.notificationCardText}>Email: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.email}</Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.houseNo}</Text>
                                         </View>
                                         <View style={styles.row}>
                                             <Text style={styles.notificationCardText}>Qty: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.qty} liter</Text>
+                                            <Text style={styles.notificationCardSubtext}>{item.price} liter</Text>
                                         </View>
                                         <View style={styles.mapContainer}>
-                                            <MapView
-                                                style={StyleSheet.absoluteFillObject}
-                                                loadingEnabled={true}
-                                                customMapStyle={mapStyle}
-                                                region={
-                                                    {
-                                                        latitude: item.address.latitude,
-                                                        longitude: item.address.longitude,
-                                                        latitudeDelta: 0.001,
-                                                        longitudeDelta: 0.025
-                                                    }
-                                                }
-                                            >   
-                                                <MapView.Marker
-                                                    image={require('../../../assets/images/map_marker.png')}
-                                                    coordinate={item.address}
-                                                />
-                                            </MapView>
+                                            {/* <Text>{ item.subscriberAddress.latitude}</Text> */}
+                                            {
+                                                item.subscriberAddress.latitude && item.subscriberAddress.longitude ? (
+                                                    <MapView
+                                                        style={StyleSheet.absoluteFillObject}
+                                                        loadingEnabled={true}
+                                                        customMapStyle={mapStyle}
+                                                        region={
+                                                            {
+                                                                latitude: item.subscriberAddress.latitude,
+                                                                longitude: item.subscriberAddress.longitude,
+                                                                latitudeDelta: 0.001,
+                                                                longitudeDelta: 0.025
+                                                            }
+                                                        }
+                                                    >   
+                                                        <MapView.Marker
+                                                            image={require('../../../assets/images/map_marker.png')}
+                                                            coordinate={item.subscriberAddress}
+                                                        />
+                                                    </MapView>
+                                                ) : (null)
+                                            }
                                         </View>
                                         <View style={styles.notificationCardFooter}>
                                             <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { StyleSheet, View, TouchableOpacity, Dimensions,Picker } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Dimensions, Picker, ToastAndroid } from 'react-native'
 import { Text } from 'react-native-paper'
 import ProfileScreen from './ProfileScreen'
 // import NotificationsScreen from './'
@@ -32,13 +32,15 @@ const logoutHandler = async ({ navigation }) => {
     })
 }
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation },props) => {
     const dispatch = useDispatch()
     const { shops,shopsLoading } = useSelector(state => state.shopDetails)
     const { user, userLoading } = useSelector(state => state.userDetails)
     const { mode } = useSelector(state => state.DarkTheme)
     const [supplier, setSupplier] = useState(0)
+    // const message = props.route.params.x
     // console.log(loading)
+  
     var count = 0
     console.log(mode)
     let [fontsLoaded] = useFonts({
@@ -49,6 +51,10 @@ const Home = ({ navigation }) => {
       dispatch(listShops())
       dispatch(getUserDetails())
     }, [dispatch])
+  
+  // if (message) {
+  //   ToastAndroid.show(`Request has been sent to ${message.name}`, ToastAndroid.SHORT)
+  // }
   
   if (shopsLoading === false) {
     // console.log(shops)
@@ -140,6 +146,7 @@ const Home = ({ navigation }) => {
           </View>
           <View style={{width: windowWidth,height: '95%',justifyContent: 'center',alignItems: 'center'}}>
             <ExploreLogo />
+            {/* <FontAwesome name='wpexplorer' size={200} /> */}
             <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}>
               <Text style={styles.btnText}><FontAwesome name='' />Explore Suppliers</Text>
             </TouchableOpacity>    

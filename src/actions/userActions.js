@@ -1,4 +1,4 @@
-import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS, SEND_SUBSCRIPTIONREQUEST_SUCCESS, CHANGE_THEME} from '../constants/index'
+import { USER_DETAILS_REQUESTED ,USER_DETAILS_SUCCESS, SEND_SUBSCRIPTIONREQUEST_SUCCESS, CHANGE_THEME,LIST_ADMINNOTIFICATIONS_REQUESTED,LIST_ADMINNOTIFICATIONS_SUCCESS} from '../constants/index'
 import firebase from 'firebase'
 
 export const getUserDetails = () => async(dispatch) => {
@@ -19,7 +19,22 @@ export const getUserDetails = () => async(dispatch) => {
                     payload: snapshot.data()
                 })
             } else {
-                console.log('User does not exist')
+                // console.log('User does not exist')
+                firebase.firestore()
+                .collection("dairyOwners")
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.exists) {
+                        // console.log(snapshot.data())
+                        dispatch({
+                            type: USER_DETAILS_SUCCESS,
+                            payload: snapshot.data()
+                        })
+                    } else {
+                        console.log('User does not exist')
+                    }
+                })
             }
         })
 
@@ -46,4 +61,36 @@ export const changeAppTheme = () => (dispatch) => {
         type: CHANGE_THEME,
         payload: true
     })
+}
+
+export const getSubscriptions = () => async(dispatch) => {
+    try {
+        dispatch({
+            type: LIST_ADMINNOTIFICATIONS_REQUESTED
+        })
+        var currentUserId = firebase.auth().currentUser.uid
+        var subscriptions = []
+        await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then((snapshot) => {
+            if (!snapshot.empty) {
+                snapshot.forEach(doc => {
+                    // console.log(doc.data())
+                    var data = {...doc.data(),"docId": doc.id}
+                    subscriptions.push(data)
+                    // console.log(shops)
+                });
+                // console.log(subscription)
+            } else {
+                console.log('Errrroooor')
+            }
+        })
+        // console.log('Hiiiii')
+
+        dispatch({
+            type: LIST_ADMINNOTIFICATIONS_SUCCESS,
+            payload: subscriptions
+        })
+
+    } catch (error) {
+        console.log(error)
+    }   
 }

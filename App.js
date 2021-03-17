@@ -27,6 +27,7 @@ import LoginScreen from './src/screens/LoginScreen'
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import Main from './src/screens/Main'
 import SubscribeScreen from './src/screens/SubscribeScreen'
+import AddressScreen from './src/screens/AddressScreen'
 
 
 export default function App() {
@@ -89,6 +90,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Main" options={{ headerShown: false }} component={Main} />
           <Stack.Screen name="Subscribe" options={{ headerShown: false }} component={SubscribeScreen} />
+          <Stack.Screen name="address" options={{ headerShown: false }} component={AddressScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

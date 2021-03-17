@@ -8,7 +8,8 @@ export const listShops = () => async (dispatch) => {
         })
 
         let shops = []
-        await firebase.firestore().collection('users').where('isShopOwner', '==', true).get().then((snapshot) => {
+        // await firebase.firestore().collection('users').where('isShopOwner', '==', true).get().then((snapshot) => {
+            await firebase.firestore().collection('dairyOwners').get().then((snapshot) => {
             // console.log(snapshot)
             if (!snapshot.empty) {
                 snapshot.forEach(doc => {

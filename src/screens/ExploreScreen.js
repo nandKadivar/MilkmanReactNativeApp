@@ -71,12 +71,6 @@ const ExploreScreen = ({navigation}) => {
                 style={StyleSheet.absoluteFillObject}
                 loadingEnabled={true}
                 customMapStyle={mapStyle}
-                // region={{
-                //     latitude: location.latitude,
-                //     longitude: location.longitude,
-                //     latitudeDelta: 0.001,
-                //     longitudeDelta: 0.025
-                // }}
                 region={region}
             >
                 {   location !== null && !shopsLoading ?
@@ -85,10 +79,6 @@ const ExploreScreen = ({navigation}) => {
                             { latitude: x.address.latitude, longitude: x.address.longitude },
                             { latitude: location.latitude, longitude: location.longitude }
                         );
-                        // let distance = getDistance(x.address,
-                        //     { latitude: location.latitude, longitude: location.longitude }
-                        // );
-                        // console.log(x.address.latitude)
                         if (distance <= 5000) {
                         // console.log(x.address)
                             return(

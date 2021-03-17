@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux'
-import { userDetailsReducer, changeThemeReducer } from './user'
+import { userDetailsReducer, changeThemeReducer, subscriptionsReducer } from './user'
 import {listShopsReducer} from './shop'
 // import {shop} from './shop'
 
 const Reducers = combineReducers({
     userDetails: userDetailsReducer, 
     shopDetails: listShopsReducer,
-    DarkTheme: changeThemeReducer
+    DarkTheme: changeThemeReducer,
+    subscriptions: subscriptionsReducer
 })
 
 export default Reducers
