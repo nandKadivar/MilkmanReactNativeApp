@@ -74,31 +74,31 @@ const AdminNotificationsScreen = ({navigation}) => {
                         <View style={{flexDirection: 'row',width: '100%',marginVertical: 8,alignItems: 'center',justifyContent: 'space-around',}}>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>M: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.mon}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>T: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.tue}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>W: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.wen}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>T: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.thu}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>F: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.fri}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>S: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.sat}</Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 <Text style={styles.notificationCardText}>S: </Text>
-                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty.sun}</Text>
                             </View>
                         </View>
                     )
@@ -118,9 +118,26 @@ const AdminNotificationsScreen = ({navigation}) => {
                         }
                     >   
                         <MapView.Marker
-                            image={require('../../../assets/images/map_marker.png')}
-                            coordinate={item.subscriberAddress}
-                        />
+                                image={require('../../../assets/images/map_marker.png')}
+                                coordinate={item.subscriberAddress}
+                            >
+                                <Callout tooltip>
+                                    <View>
+                                        <View style={styles.tooltip}>
+                                            <Text>House No. </Text>
+                                            {
+                                                item.houseNo == '' ? (
+                                                    <Text>NA</Text>
+                                                ): (
+                                                    <Text>{ item.houseNo }</Text>
+                                                )
+                                            }
+                                        </View>
+                                        <View style={styles.arrowBorder}></View>
+                                        <View style={styles.arrow}></View>
+                                    </View>
+                                </Callout>
+                        </MapView.Marker>
                     </MapView>
                 </View>
                 <View style={styles.notificationCardFooter}>
@@ -237,5 +254,12 @@ const styles = StyleSheet.create({
         borderColor: primaryColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    tooltip: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 10
     }
 });

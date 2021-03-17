@@ -70,8 +70,13 @@ const AddressScreen = (props) => {
             props.navigation.navigate('Homepage',{message})
         } else {
             await firebase.firestore().collection('subscriptions').add({
-                cunstomerId: firebase.auth().currentUser.uid,
+                customerId: firebase.auth().currentUser.uid,
+                customerName: data.customerDetails.name,
+                customerEmail: data.customerDetails.email,
                 shopId: data.shopDetails.id,
+                shopName: data.shopDetails.name,
+                shopEmail: data.shopDetails.email,
+                shopDecription: data.shopDetails.description,
                 scheduleType: 'custom',
                 qty: {
                     mon: data.subscriberDetails.mon,

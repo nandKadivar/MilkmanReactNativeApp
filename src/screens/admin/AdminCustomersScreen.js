@@ -115,7 +115,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         backgroundColor: '#fff',
         borderRadius: 5,
-        elevation: 2
+        elevation: 2,
+        marginBottom: 10
     },
     row: {
         flexDirection: 'row',
