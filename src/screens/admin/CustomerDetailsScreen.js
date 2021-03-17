@@ -60,20 +60,13 @@ const CustomerDetailsScreen = (props) => {
                         <Text style={styles.text}>{ item.qty.sun }</Text>
                     </View>
                 </View>
-                {/* <View style={item.scheduleType == 'custom' ? styles.lastrow : styles.hide}>
-                    <Text style={styles.text}>Total per week: </Text>
-                    <Text style={styles.text}>{ total } liters</Text>
-                </View> */}
                 <View style={item.scheduleType == 'custom' ? styles.hide : styles.row}>
                     <Text style={styles.text}>Qty</Text>
-                    {/* <Text style={styles.text}>{x.price}/<Text style={{fontSize: 12}}>liter</Text></Text> */}
-                    {/* <View style={styles.qtyContainer}> */}
                     {
                         item.scheduleType != 'custom' && (
                             <Text style={styles.text}>{item.qty} liters</Text>
                         ) 
                     }
-                    {/* </View> */}
                 </View>
                 <View style={styles.row}>
                     <View style={styles.mapContainer}>
@@ -133,26 +126,17 @@ const styles = StyleSheet.create({
         height: 200,
         paddingVertical: 20,
         paddingHorizontal: 20,
-        // borderRadius: 7,
         backgroundColor: primaryColor,
         flexDirection: 'column',
         justifyContent: 'center'
     },
     customerContainer: {
         backgroundColor: '#fff',
-        // marginVertical: 10,
         width: windowWidth,
         padding: 10,
         paddingBottom: 20,
-        // marginTop: 10,
-        // position: 'absolute',
-        // bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    inputContainer: {
-        width: windowWidth / 1.3,
-        marginVertical: 15
     },
     row: {
         flexDirection: 'row',
@@ -160,20 +144,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 10,
-        // borderTopWidth: 1,
-        // borderTopColor: '#e2e2e2',
         borderBottomWidth: 1,
-        borderBottomColor: '#e2e2e2'
-    },
-    lastrow: {
-        flexDirection: 'row',
-        width: windowWidth/1.05,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingTop: 10,
-        // borderTopWidth: 1,
-        // borderTopColor: '#e2e2e2',
-        // borderBottomWidth: 1,
         borderBottomColor: '#e2e2e2'
     },
     weekRow: {
@@ -185,106 +156,12 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#e2e2e2'
     },
-    scheduleRow: {
-        flexDirection: 'row',
-        width: windowWidth/1.05,
-        alignItems: 'center',
-        // justifyContent: 'space-between',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e2e2e2'
-    },
-    scheduleSelectorSelected: {
-        backgroundColor: primaryColor,
-        borderRadius: 15,
-        paddingVertical: 7,
-        paddingHorizontal: 15,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    scheduleSelectorSelectedText: {
-        color: '#fff'
-    },
     hide: {
         display: 'none'
     },
     text: {
         padding: 5,
         fontSize: 16
-    },
-    mapContainer: {
-        width: '100%',
-        height: 400
-    },
-    qtyContainer: {
-        width: '40%',
-        paddingVertical: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-    },
-    plus: {
-        backgroundColor: primaryColor,
-        borderRadius: 5,
-        elevation: 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 8
-    },
-    plus2: {
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        elevation: 5,
-        marginVertical: 7,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 8
-    },
-    qtyText: {
-        fontSize: 26,
-        color: primaryColor
-        // paddingHorizontal: 10
-    },
-    // btnContainer: {
-    //     // position: 'absolute',
-    //     // bottom: 0,
-    //     padding: 20,
-    //     backgroundColor: '#fff',
-    //     alignItems: 'center',
-    //     justifyContent: 'center'
-    // },
-    button: {
-        // marginTop: 10,
-        // position: 'absolute',
-        // bottom: 0,
-        width: windowWidth/1.05,
-        height: windowHeight/16,
-        borderRadius: 5,
-        borderWidth: 2,
-        borderColor: primaryColor,
-        justifyContent: 'center',
-        marginTop: -3
-    },
-    // bottomButton: {
-    //     width: windowWidth/1.05,
-    //     height: windowHeight/16,
-    //     borderRadius: 5,
-    //     borderWidth: 2,
-    //     borderColor: primaryColor,
-    //     justifyContent: 'center',
-    //     marginTop: 150
-    // },
-    buttonText: {
-        fontSize: 15,
-        textTransform: 'uppercase',
-        color: primaryColor,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    datePicker: {
-        borderWidth: 0
     },
     mapContainer: {
         marginTop: 5,
