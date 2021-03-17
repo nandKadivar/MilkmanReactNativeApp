@@ -79,6 +79,7 @@ const SubscribeScreen = (props) => {
                     sat: satQty,
                     sun: sunQty
                 },
+                
             }
             props.navigation.navigate('address',{data})
         } else {

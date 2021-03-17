@@ -28,6 +28,7 @@ import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen'
 import Main from './src/screens/Main'
 import SubscribeScreen from './src/screens/SubscribeScreen'
 import AddressScreen from './src/screens/AddressScreen'
+import CustomerDetailsScreen from './src/screens/admin/CustomerDetailsScreen'
 
 
 export default function App() {
@@ -91,6 +92,7 @@ export default function App() {
           <Stack.Screen name="Main" options={{ headerShown: false }} component={Main} />
           <Stack.Screen name="Subscribe" options={{ headerShown: false }} component={SubscribeScreen} />
           <Stack.Screen name="address" options={{ headerShown: false }} component={AddressScreen} />
+          <Stack.Screen name="customerDetails" options={{ headerShown: false }} component={CustomerDetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

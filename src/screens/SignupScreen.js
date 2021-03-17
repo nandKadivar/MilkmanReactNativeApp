@@ -29,7 +29,7 @@ const SignupScreen = ({navigation}) => {
 
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((result) => {
-                firebase.firestore().collection("dairyOwners")
+                firebase.firestore().collection("users")
                     .doc(firebase.auth().currentUser.uid)
                     .set({
                         name,email

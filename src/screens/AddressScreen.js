@@ -38,8 +38,13 @@ const AddressScreen = (props) => {
         // console.log(data)
         if (data.subscriberDetails.schedule === 'daily') {
             await firebase.firestore().collection('subscriptions').add({
-                cunstomerId: firebase.auth().currentUser.uid,
+                customerId: firebase.auth().currentUser.uid,
+                customerName: data.customerDetails.name,
+                customerEmail: data.customerDetails.email,
                 shopId: data.shopDetails.id,
+                shopName: data.shopDetails.name,
+                shopEmail: data.shopDetails.email,
+                shopDecription: data.shopDetails.description,
                 scheduleType: 'daily',
                 qty: data.subscriberDetails.qty,
                 instruction: data.subscriberDetails.instruction,
@@ -125,7 +130,7 @@ const AddressScreen = (props) => {
                     <TextInput style={{width: 200,height: 40,backgroundColor: '#ececec',borderRadius: 7,paddingVertical:2,paddingHorizontal: 15}} onChangeText={(value)=>setHouseNumber(value)} placeholder="221 B" />
                 </View>
                 <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.button} onPress={sendRequestHandler}><Text style={styles.buttonText}>Select Address</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={sendRequestHandler}><Text style={styles.buttonText}>Send Subscription Req.</Text></TouchableOpacity>
             </View>
             </View>
         </View>

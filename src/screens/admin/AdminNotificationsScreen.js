@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import {SafeAreaView} from 'react-navigation'
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions,ImageBackground} from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Dimensions,ImageBackground, FlatList} from 'react-native';
 import firebase from '@firebase/app'
 import MapView, { Callout } from 'react-native-maps'
 import { region, markers, mapStyle } from '../../components/DairyShopData'
@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { theme } from '../../theme'
 var primaryColor = theme.primaryColor
-import { getUserDetails, getSubscriptions } from '../../actions/userActions'
+import { getUserDetails, getSubscriptionRequests } from '../../actions/userActions'
 import { ScrollView } from 'react-native-gesture-handler';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,83 +17,118 @@ const AdminNotificationsScreen = ({navigation}) => {
     // const x = props.route.params.x
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.userDetails)
-    const { subscriptionLoading,subscribers } = useSelector(state => state.subscriptions)
-  
+    const { subscriptionRequestsLoading,subscriptionRequests } = useSelector(state => state.subscriptionRequests)
+    console.log(subscriptionRequests)
     useEffect(() => {
         dispatch(getUserDetails())
-        dispatch(getSubscriptions())
+        dispatch(getSubscriptionRequests())
     }, [dispatch])
 
     const acceptReqHandler = async (item) => {
-        // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
-        // const firestore = firebase.firestore()
-        // const col = firestore.collection('users')
-        // const query = col.where('cunstomer', 'array-contains-any', 'item.email')
-        // query.get().then(snapshot => {
-        //     snapshot.docs.forEach(doc => {
-        //         console.log(doc.id,doc.data())
-        //     })
-        // })
-
-        var currentUserId = firebase.auth().currentUser.uid
-        // firebase.firestore().doc(firebase.auth().currentUser.uid).update()
-        // const firestore = firebase.firestore()
-        // const col = firestore.collection('users')
-        // const query = col.where('AhMaxiyWxQeOLVd7DgvOIUKNGCs1/cunstomer', 'array-contains-any', 'item.email')
-        // query.get().then(snapshot => {
-        //     snapshot.docs.forEach(doc => {
-        //         console.log(doc.id,doc.data())
-        //     })
-        // })
-        // await firebase.firestore().collection('users').doc(currentUserId).update({
-        //     cunstomer: firebase.firestore.FieldValue.arrayRemove({
-        //         email: user.email,
-        //         name: user.name,
-        //         qty: qty,
-        //         address: {
-        //             latitude: address.latitude,
-        //             longitude: address.longitude
-        //         },
-        //         isConfirm: false
-        //     })
-        // })
-
-        await firebase.firestore().collection('users').doc(currentUserId).update({
-            cunstomer: [
-                {
-                    email: item.email,
-                    name: item.name,
-                    qty: item.qty,
-                    address: {
-                        latitude: item.address.latitude,
-                        longitude: item.address.longitude
-                    },
-                    isConfirm: true
-                }
-            ]
-        });
+        await firebase.firestore().collection('subscriptions').doc(item.docId).update({
+            isConfirm: true
+        })
 
         navigation.navigate('Customers')
     }
 
     const deleteReqHandler = async (item) => {
-        // firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
-        //     cunstomer: []
-        // })
-        // console.log(item.email)
-        // const snapshot = await firebase.firestore().collection('users').where('email', '==', item.email).get().then((snapshot) => {
-        //     console.log(snapshot.id())
-        // })
-        // var userId
-        // await firebase.firestore().collection('users').where('email', '==', item.email).get().then((snapshot) => {
-        //     snapshot.forEach((doc) => {
-        //         userId = doc.id
-        //     })
-        // })
+        
+    }
 
-        // await firebase.firestore().collection('users').doc(userId).update({
-        //     message: 'hiii'
-        // })
+    const notificationCard = ({ item }) => {
+        return (
+            <View style={styles.notificationCard}>
+                <View style={styles.row}>
+                    <Text style={styles.notificationCardText}>Name: </Text>
+                    <Text style={styles.notificationCardSubtext}>{ item.customerName}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.notificationCardText}>Email: </Text>
+                    <Text style={styles.notificationCardSubtext}>{ item.customerEmail}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.notificationCardText}>Starting date: </Text>
+                    <Text style={styles.notificationCardSubtext}>{ item.startingDate}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.notificationCardText}>Schedule: </Text>
+                    <Text style={styles.notificationCardSubtext}>{ item.scheduleType}</Text>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.notificationCardText}>Instruction: </Text>
+                    <Text style={styles.notificationCardSubtext}>{ item.instruction}</Text>
+                </View>
+                {
+                    item.scheduleType == 'daily' || item.scheduleType == 'alternate' ? (
+                        <View style={styles.row}>
+                            <Text style={styles.notificationCardText}>Qty: </Text>
+                            <Text style={styles.notificationCardSubtext}>{ item.qty} liters</Text>
+                        </View>
+                    ) : (
+                            null
+                    )
+                }
+                {
+                    item.scheduleType == 'custom' && (
+                        <View style={{flexDirection: 'row',width: '100%',marginVertical: 8,alignItems: 'center',justifyContent: 'space-around',}}>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>M: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>T: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>W: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>T: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>F: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>S: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.notificationCardText}>S: </Text>
+                                <Text style={styles.notificationCardSubtext}>{item.qty}</Text>
+                            </View>
+                        </View>
+                    )
+                }
+                <View style={styles.mapContainer}>
+                    <MapView
+                        style={StyleSheet.absoluteFillObject}
+                        loadingEnabled={true}
+                        customMapStyle={mapStyle}
+                        region={
+                            {
+                                latitude: item.subscriberAddress.latitude,
+                                longitude: item.subscriberAddress.longitude,
+                                latitudeDelta: 0.001,
+                                longitudeDelta: 0.025
+                            }
+                        }
+                    >   
+                        <MapView.Marker
+                            image={require('../../../assets/images/map_marker.png')}
+                            coordinate={item.subscriberAddress}
+                        />
+                    </MapView>
+                </View>
+                <View style={styles.notificationCardFooter}>
+                    <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteButton} onPress={()=> deleteReqHandler(item)}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
+                </View>
+            </View>
+        );
     }
 
     return (
@@ -104,57 +139,14 @@ const AdminNotificationsScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.mainContainer}>
-                {/* {console.log(subscription)} */}
                 <ScrollView>
                     {
-                        subscriptionLoading == false && (
-                            subscribers.map((item, key) => (
-                                item.isConfirm === false && (
-                                    <View style={styles.notificationCard}>
-                                        <View style={styles.row}>
-                                            <Text style={styles.notificationCardText}>Name: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.instruction}</Text>
-                                        </View>
-                                        <View style={styles.row}>
-                                            <Text style={styles.notificationCardText}>Email: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.houseNo}</Text>
-                                        </View>
-                                        <View style={styles.row}>
-                                            <Text style={styles.notificationCardText}>Qty: </Text>
-                                            <Text style={styles.notificationCardSubtext}>{item.price} liter</Text>
-                                        </View>
-                                        <View style={styles.mapContainer}>
-                                            {/* <Text>{ item.subscriberAddress.latitude}</Text> */}
-                                            {
-                                                item.subscriberAddress.latitude && item.subscriberAddress.longitude ? (
-                                                    <MapView
-                                                        style={StyleSheet.absoluteFillObject}
-                                                        loadingEnabled={true}
-                                                        customMapStyle={mapStyle}
-                                                        region={
-                                                            {
-                                                                latitude: item.subscriberAddress.latitude,
-                                                                longitude: item.subscriberAddress.longitude,
-                                                                latitudeDelta: 0.001,
-                                                                longitudeDelta: 0.025
-                                                            }
-                                                        }
-                                                    >   
-                                                        <MapView.Marker
-                                                            image={require('../../../assets/images/map_marker.png')}
-                                                            coordinate={item.subscriberAddress}
-                                                        />
-                                                    </MapView>
-                                                ) : (null)
-                                            }
-                                        </View>
-                                        <View style={styles.notificationCardFooter}>
-                                            <TouchableOpacity style={styles.acceptButton} onPress={() => acceptReqHandler(item)}><Text style={styles.acceptButtonText}>Accept</Text></TouchableOpacity>
-                                            <TouchableOpacity style={styles.deleteButton} onPress={()=> deleteReqHandler(item)}><FontAwesome name="trash" color={primaryColor} size={24} /></TouchableOpacity>
-                                        </View>
-                                    </View>
-                                )
-                            ))
+                        subscriptionRequestsLoading == false && (
+                            <FlatList
+                                data={subscriptionRequests}
+                                renderItem={notificationCard}
+                                keyExtractor={item => item.id}
+                            />
                         )
                     }
                 </ScrollView>
@@ -168,6 +160,7 @@ export default AdminNotificationsScreen
 const styles = StyleSheet.create({
     container: {
       flex: 1,
+    //   backgroundColor: '#c9e7f2',
       backgroundColor: '#f7f7f7',
       alignItems: 'center',
       justifyContent: 'flex-start',
@@ -185,13 +178,11 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     notificationCard: {
+        width: windowWidth / 1.05,
+        padding: 10,
+        paddingHorizontal: 15,
         backgroundColor: '#fff',
-        width: windowWidth / 1.1,
-        padding: 15,
-        marginVertical: 15,
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        borderRadius: 5,
         elevation: 2
     },
     row: {
