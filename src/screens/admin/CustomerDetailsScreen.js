@@ -1,6 +1,5 @@
 import React from 'react'
 import {StyleSheet,View, Text, Dimensions} from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import MapView, { Callout } from 'react-native-maps'
 import { region, markers, mapStyle } from '../../components/DairyShopData'
 import { theme } from '../../theme'
