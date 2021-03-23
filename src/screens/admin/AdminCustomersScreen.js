@@ -16,7 +16,7 @@ const AdminCustomersScreen = ({navigation}) => {
 
     const dispatch = useDispatch()
     const { subscriptionsLoading, subscriptions } = useSelector(state => state.subscriptions)
-    console.log(subscriptions)
+    // console.log(subscriptions)
 
     useEffect(() => {
         dispatch(getSubscriptions())
@@ -54,17 +54,18 @@ const AdminCustomersScreen = ({navigation}) => {
                         <Text style={styles.headerText}>Customers</Text>
                     </View>
                     <View style={styles.mainContainer}>
-                        <ScrollView>
+                        {/* <ScrollView> */}
                             {
                                 subscriptionsLoading == false && (
                                     <FlatList
                                         data={subscriptions}
                                         renderItem={customerCard}
                                         keyExtractor={item => item.id}
+                                        horizontal={false}
                                     />
                                 )
                             }
-                        </ScrollView>
+                        {/* </ScrollView> */}
                     </View>
                 </View>
             )
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
     },
     mainContainer: {
         width: windowWidth,
+        height: windowHeight/1.35,
         paddingVertical: 20,
         alignItems: 'center',
         justifyContent: 'flex-start',

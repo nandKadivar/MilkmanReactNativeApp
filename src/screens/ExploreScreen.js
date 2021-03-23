@@ -8,7 +8,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import InputField from '../components/InputField'
 import { useSelector, useDispatch } from 'react-redux'
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails,getSubscriptionRequests,getSubscriptions } from '../actions/userActions'
 import { listShops } from '../actions/shopActions'
 import { getDistance } from 'geolib';
 import { theme } from '../theme'
@@ -25,11 +25,15 @@ const ExploreScreen = ({navigation}) => {
     // const {currentUser} = useSelector(state => state.userState)
     const { shops, shopsLoading } = useSelector(state => state.shopDetails)
     const { user } = useSelector(state => state.userDetails)
-    
+    const { subscriptionRequestsLoading,subscriptionRequests } = useSelector(state => state.subscriptionRequests)
+    const { subscriptionsLoading, subscriptions } = useSelector(state => state.subscriptions)
+
     var count = 0
 
     useEffect(() => {
         dispatch(listShops())
+        dispatch(getSubscriptionRequests())
+        dispatch(getSubscriptions())
         dispatch(getUserDetails())
         getUserLocation()
     }, [dispatch])
@@ -124,12 +128,13 @@ const ExploreScreen = ({navigation}) => {
                 horizontal
                 scrollEventThrottle={1}
                 showsHorizontalScrollIndicator={false}
-                pagingEnabled
+                // pagingEnabled
                 style={styles.scrollview}
             >
                 {
                     location !== null && shops !== undefined ?
                     shops.map((x) => {
+                        count = 0
                         let distance = getDistance(
                             { latitude: x.address.latitude, longitude: x.address.longitude },
                             { latitude: location.latitude, longitude: location.longitude }
@@ -149,33 +154,45 @@ const ExploreScreen = ({navigation}) => {
                                     </View>
                                     <View style={styles.cardFooterContainer}>
                                         <Text style={{ fontSize: 24, fontWeight: 'bold' }}><MaterialCommunityIcons name='currency-inr' size={24} /> {x.price} <Text style={{ fontSize: 12, fontWeight: 'normal' }}>/liter</Text></Text>
-                                        {  
-                                            x.cunstomer ?
-                                            x.cunstomer.map((item,key) => {
-                                                count = 1
-                                                // console.log(item.email)
-                                                if (item.email === user.email) {
-                                                    count += 1
-                                                    if (item.isConfirm === false) {
-                                                        return (
-                                                            <TouchableOpacity onPress={() => {onCancelHandler(x)}} style={styles.cancelButton}><Text style={styles.cancelButtonText}>Cancel Req...</Text></TouchableOpacity>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <View style={styles.subscribed}><FontAwesome name='check' style={{marginRight: 5}} size={18} color={'#2d567f'} /><Text style={styles.subscribedText}>Subscribed</Text></View>
-                                                        )
-                                                    }
-                                                }
-                                            })
-                                            : (   
+                                        {
+                                            subscriptionsLoading == false && (
+                                                subscriptions.length > 0 && (
+                                                    subscriptions.map((a, key) => {
+                                                        if (a.shopEmail == x.email) {
+                                                            // console.log(x.email)
+                                                            count = count +1
+                                                            return (
+                                                                <View style={styles.subscribed}><FontAwesome name='check' style={{ marginRight: 5 }} size={18} color={'#2d567f'} /><Text style={styles.subscribedText}>Subscribed</Text></View>
+                                                            )
+                                                        } else {
+                                                            null
+                                                        }
+                                                    })
+                                                )
+                                            )
+                                        }
+                                        {
+                                            subscriptionRequestsLoading == false && (
+                                                subscriptionRequests.length > 0 && (
+                                                    subscriptionRequests.map((a, key) => {
+                                                        if (a.shopEmail == x.email) {
+                                                            // console.log(x.email)
+                                                            count = count +1
+                                                            return (
+                                                                <TouchableOpacity onPress={() => { onCancelHandler(x) }} style={styles.cancelButton}><Text style={styles.cancelButtonText}>Cancel Req...</Text></TouchableOpacity>
+                                                            )
+                                                        } else {
+                                                            null
+                                                        }
+                                                    })
+                                                )
+                                            )
+                                        }
+                                        {
+                                            count == 0 && (
                                                 <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>
                                             )
                                         }
-                                        {/* {
-                                            count == 1 && (
-                                                <TouchableOpacity onPress={() => onSubscribeHandler(x)} style={styles.button}><Text style={styles.buttonText}>Subscribe</Text></TouchableOpacity>  
-                                            )
-                                        } */}
                                     </View>
                                 </View>
                             )
@@ -244,6 +261,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         paddingVertical: 10,
+        // padding: 10
     },
     // cardContainer: {
     //     backgroundColor: '#fff',

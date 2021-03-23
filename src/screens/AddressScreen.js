@@ -36,6 +36,13 @@ const AddressScreen = (props) => {
 
     const sendRequestHandler = async () => {
         // console.log(data)
+        var splitdate = data.subscriberDetails.startingDate.split('-')
+        var endingMonth = String((Number(splitdate[1]) + 1) % 12)
+        if (endingMonth.length <= 1) {
+            endingMonth = '0'+endingMonth
+        }
+        var endingDate = splitdate[0] + '-' + endingMonth + '-' + splitdate[2]
+        
         if (data.subscriberDetails.schedule === 'daily') {
             await firebase.firestore().collection('subscriptions').add({
                 customerId: firebase.auth().currentUser.uid,
@@ -49,6 +56,7 @@ const AddressScreen = (props) => {
                 qty: data.subscriberDetails.qty,
                 instruction: data.subscriberDetails.instruction,
                 startingDate: data.subscriberDetails.startingDate,
+                endingDate: endingDate,
                 price: data.shopDetails.price,
                 houseNo: houseNumber,
                 subscriberAddress: {

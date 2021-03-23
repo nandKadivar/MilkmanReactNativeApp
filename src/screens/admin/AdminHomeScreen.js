@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useState,useEffect} from 'react'
 import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native'
 import { Text } from 'react-native-paper'
 import AdminProfileScreen from './AdminProfileScreen'
@@ -9,7 +9,8 @@ import firebase from '@firebase/app'
 import { useSelector, useDispatch } from 'react-redux'
 import { theme } from '../../theme'
 var primaryColor = theme.primaryColor
-import { getUserDetails } from '../../actions/userActions'
+import { getUserDetails, changeAppTheme, getSubscriptions } from '../../actions/userActions'
+import {getTodaysSchedule} from '../../actions/shopActions'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -25,28 +26,93 @@ const logoutHandler = async ({ navigation }) => {
 }
 
 const AdminHome = ({ navigation }) => {
+  const { subscriptionsLoading, subscriptions } = useSelector(state => state.subscriptions)
+  const { scheduleDetailsLoading, scheduleDetails } = useSelector(state => state.schedule)
+  const [milkContainerQty,setMilkContainerQty] = useState(0)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getSubscriptions())
+    dispatch(getTodaysSchedule())
+  }, [dispatch])
+  // console.log(scheduleDetails)
+
+  // var currentDate = new Date().getDate()
+  // var currentMonth = new Date().getMonth() + 1
+  // if (String(currentMonth).length <= 1) {
+  //   currentMonth = '0'+currentMonth
+  // }
+  // var currentYear = new Date().getFullYear()
+  // var todaysDate = String(currentDate + '-' + currentMonth + '-' + currentYear)
+  // console.log(todaysDate)
+  // const [today,setToday] = useState(todaysDate)
+  // const [schedule,setSchedule] = useState([])
+  // var scheduleDetails = []
+  
+  if (scheduleDetailsLoading === false) {
+    if (scheduleDetails.length > 0) {
+      const data = scheduleDetails
+      var total = 0
+      // console.log(data)
+      data.forEach((item) => {
+        if (item.qty) {
+          // setMilkContainerQty(milkContainerQty + item.qty)
+          // console.log(item.qty)
+          total = total + item.qty
+        }
+      })
+      // setMilkContainerQty(10)
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+              <FontAwesome name='bars' size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.mainContainer}>
+            <View style={styles.section1}>
+              <View style={styles.totalQtyContainer}>  
+                  <Text>{ total }</Text>
+              </View>
+              <View style={styles.scheduleCard}>
+                <Text></Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+              <FontAwesome name='bars' size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.mainContainer}>
+            {/* <ExploreLogo /> */}
+            {/* <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}> */}
+              <Text style={styles.btnText}><FontAwesome name='' />No schedule Today</Text>
+            {/* </TouchableOpacity> */}
+          </View>
+        </View>
+      );
+    }
+  } else {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <FontAwesome name='bars' size={24} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.mainContainer}>
-          {/* <ExploreLogo /> */}
-          {/* <TouchableOpacity style={styles.btnContainer} onPress={() => navigation.navigate('Explore')}> */}
-            <Text style={styles.btnText}><FontAwesome name='' />Hello Admin user</Text>
-          {/* </TouchableOpacity> */}
-        </View>
+      <View style={styles.mainContainer}>
+        <Text>Loading ...</Text>
       </View>
-    );
+    )
   }
+}
   
 const AdminCustomDrawerContent = (props) => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.userDetails)
   
   useEffect(() => {
+    dispatch(getSubscriptions())
     dispatch(getUserDetails())
   },[dispatch])
   
@@ -121,8 +187,8 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     width: windowWidth,
-    height: '100%',
-    justifyContent: 'center',
+    height: '95%',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
   btnContainer: {
@@ -152,5 +218,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  section1: {
+    width: windowWidth,
+    height: windowHeight / 3,
+    backgroundColor: primaryColor,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  totalQtyContainer: {
+    marginTop: 40,
+    backgroundColor: '#fff',
+    width: windowWidth / 2.5,
+    height: 40,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5
+  },
+  scheduleCard: {
+    position: 'absolute',
+    top: windowHeight/4.8,
+    width: windowWidth / 1.1,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 10,
+    flexDirection: 'column'
   }
 });

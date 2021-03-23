@@ -24,7 +24,10 @@ const SubscribeScreen = (props) => {
     var minDate = String(minDay+'-'+currentMonth+'-'+currentYear)
     var maxDate = String(currentDate + '-' + maxMonth + '-' + currentYear)
     
-    const [date,setDate] = useState(minDate)
+    const [date, setDate] = useState(minDate)
+    const [endingDate,setEndingDate] = useState()
+    // var endingDate = date.split('-')
+    // console.log((Number(date[1])+1)%12)
     const [qty, setQty] = useState(1)
     const [instruction, setInstruction] = useState('')
     const [schedule, setSchedule] = useState('daily')
@@ -55,11 +58,9 @@ const SubscribeScreen = (props) => {
             if (schedule == 'daily') {
                 var deliverySchedule = 'daily'
             }
-            // else if (schedule == 'alternate') {
-            //     var day = new Date(date).getDay()
-                
-            //     console.log(date)
-            // }
+            else if (schedule == 'alternate') {
+                var deliverySchedule = 'alternate'
+            }
             else {
                 var deliverySchedule = 'custom'
             }
@@ -79,50 +80,11 @@ const SubscribeScreen = (props) => {
                     sat: satQty,
                     sun: sunQty
                 },
-                
             }
             props.navigation.navigate('address',{data})
         } else {
             console.log("Un able to get user's details")
         }
-        // if (user) {
-        //     try {
-        //         console.log(x.id)
-        //         await firebase.firestore().collection('users').doc(x.id).update({
-        //             // cunstomer: [
-        //             //     {
-        //             //         email: user.email,
-        //             //         name: user.name,
-        //             //         qty: qty,
-        //             //         address: {
-        //             //             latitude: address.latitude,
-        //             //             longitude: address.longitude
-        //             //         },
-        //             //         isConfirm: false
-        //             //     }
-        //             // ]
-        //             cunstomer: firebase.firestore.FieldValue.arrayUnion({
-        //                 email: user.email,
-        //                 name: user.name,
-        //                 qty: qty,
-        //                 address: {
-        //                     latitude: address.latitude,
-        //                     longitude: address.longitude
-        //                 },
-        //                 isConfirm: false
-        //             })
-        //             // price: 1
-        //         })
-        //         // const message= {flag: true}
-        //         props.navigation.navigate('Explore')
-        //         // props.navigation.navigate('Explore')
-        //     } catch (error) {
-        //         console.log(error)
-        //         console.log("Fail to send subscription request .........")
-        //         // const message= {flag: false}
-        //         props.navigation.navigate('Explore')
-        //     }
-        // }
     }
 
 
@@ -182,9 +144,21 @@ const SubscribeScreen = (props) => {
                                 borderRadius: 5,
                             },
                         }}
-                        onDateChange={(date) => {setDate(date)}}
+                        onDateChange={(date) => {
+                            setDate(date)
+                            var splitdate = date.split('-')
+                            var endingMonth = String((Number(splitdate[1]) + 1) % 12)
+                            if (endingMonth.length <= 1) {
+                                endingMonth = '0'+endingMonth
+                            }
+                            setEndingDate(splitdate[0]+'-'+endingMonth+'-'+splitdate[2])
+                        }}
                     />
                 </View>
+                {/* <View style={styles.row}>
+                    <Text style={styles.text}>Contract valid till:</Text>
+                    <Text style={{padding: 5,fontSize: 16,color: primaryColor}}>{ endingDate }</Text>
+                </View> */}
                 <View style={styles.row}>
                     <Text style={styles.text}>Instruction:</Text>
                     <TextInput style={{width: 200,height: 40,backgroundColor: '#ececec',borderRadius: 7,paddingVertical:2,paddingHorizontal: 15}} onChangeText={(value)=>setInstruction(value)} />

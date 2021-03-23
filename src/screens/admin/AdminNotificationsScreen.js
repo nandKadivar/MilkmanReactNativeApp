@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     notificationCard: {
         width: windowWidth / 1.05,
         padding: 10,
+        marginBottom: 15,
         paddingHorizontal: 15,
         backgroundColor: '#fff',
         borderRadius: 5,

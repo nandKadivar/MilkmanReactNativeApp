@@ -11,8 +11,11 @@ const LandingScreen = ({navigation}) => {
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>Welcome,</Text>
                 </View>
-                <View style={styles.subtextContainer}>
+                {/* <View style={styles.subtextContainer}>
                     <Text style={styles.subtitle}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium veritatis temporibus magni maiores, ipsum fugiat, quaerat, soluta corporis commodi quas eum. Voluptate nam, voluptates vitae unde odit magnam accusamus saepe.</Text>
+                </View> */}
+                <View style={styles.subtextContainer}>
+                    <Text style={styles.subtitle}>Mikman helps you to connect with world. Now finding the reliable milk supplier is become easy. If you are running dairy business and want to reach to your customers? Milkman has the solution. Lets change the old way of doing business by connection togather and achive the true meaning of 'Local for Vocal'</Text>
                 </View>
                 <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}><Text style={styles.loginButtonText}>Log in</Text></TouchableOpacity>
                 <TouchableOpacity style={styles.signupButton} onPress={() => navigation.navigate('Signup')}><Text style={styles.signupButtonText}>Sign up</Text></TouchableOpacity>
@@ -36,8 +39,9 @@ const styles = StyleSheet.create({
     },
     subtextContainer: {
         // backgroundColor: '#fff',
-        width: windowWidth - 80,
-        marginBottom: 120,
+        textAlign: 'justify',
+        width: windowWidth - 75,
+        marginBottom: 100,
     },
     title: {
         color: '#fff',

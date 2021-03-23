@@ -11,7 +11,7 @@ export const getUserDetails = () => async(dispatch) => {
         .collection("users")
         .doc(firebase.auth().currentUser.uid)
         .get()
-        .then((snapshot) => {
+        .then(async(snapshot) => {
             if (snapshot.exists) {
                 // console.log(snapshot.data())
                 dispatch({
@@ -20,7 +20,7 @@ export const getUserDetails = () => async(dispatch) => {
                 })
             } else {
                 // console.log('User does not exist')
-                firebase.firestore()
+                await firebase.firestore()
                 .collection("dairyOwners")
                 .doc(firebase.auth().currentUser.uid)
                 .get()
@@ -70,7 +70,7 @@ export const getSubscriptionRequests = () => async(dispatch) => {
         })
         var currentUserId = firebase.auth().currentUser.uid
         var subscriptionRequests = []
-        await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then((snapshot) => {
+        await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then(async(snapshot) => {
             if (!snapshot.empty) {
                 snapshot.forEach(doc => {
                     // console.log(doc.data())
@@ -83,7 +83,23 @@ export const getSubscriptionRequests = () => async(dispatch) => {
                 });
                 // console.log(subscription)
             } else {
-                console.log('Errrroooor')
+                // console.log('Errrroooor')
+                await firebase.firestore().collection('subscriptions').where('customerId', '==', currentUserId).get().then((snapshot) => {
+                    if (!snapshot.empty) {
+                        snapshot.forEach(doc => {
+                            // console.log(doc.data())
+                            var data = { ...doc.data(), "docId": doc.id }
+                            // var customerData = firebase.firestore().collection('users').doc(data.cunstomerId).get()
+                            if (data.isConfirm ==  false) {
+                                subscriptionRequests.push(data)
+                            }
+                            // console.log(shops)
+                        });
+                        // console.log(subscription)
+                    } else {
+                        console.log('Errrroooor')
+                    }
+                })
             }
         })
         // console.log('Hiiiii')
@@ -105,7 +121,7 @@ export const getSubscriptions = () => async(dispatch) => {
         })
         var currentUserId = firebase.auth().currentUser.uid
         var subscriptions = []
-        await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then((snapshot) => {
+        await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then(async(snapshot) => {
             if (!snapshot.empty) {
                 snapshot.forEach(doc => {
                     // console.log(doc.data())
@@ -118,7 +134,24 @@ export const getSubscriptions = () => async(dispatch) => {
                 });
                 // console.log(subscription)
             } else {
-                console.log('Errrroooor')
+                // console.log('Errrroooor')
+                await firebase.firestore().collection('subscriptions').where('customerId', '==', currentUserId).get().then((snapshot) => {
+                    if (!snapshot.empty) {
+                        snapshot.forEach(doc => {
+                            // console.log(doc.data())
+                            var data = { ...doc.data(), "docId": doc.id }
+                            // var customerData = firebase.firestore().collection('users').doc(data.cunstomerId).get()
+                            if (data.isConfirm ==  true) {
+                                subscriptions.push(data)
+                            }
+                            // console.log(shops)
+                        });
+                        // console.log(subscription)
+                    } else {
+                        console.log('Errrroooor')
+                        
+                    }
+                })
             }
         })
         // console.log('Hiiiii')
@@ -130,5 +163,5 @@ export const getSubscriptions = () => async(dispatch) => {
 
     } catch (error) {
         console.log(error)
-    }   
+    }
 }
