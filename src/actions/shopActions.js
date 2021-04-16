@@ -37,7 +37,7 @@ export const getTodaysSchedule = () => async (dispatch) => {
     dispatch({
         type: LIST_TODAYSSCHEDULE_REQUESTED
     })
-    
+
     var d = new Date();
     var weekday = new Array(7);
     weekday[0] = "sun";
@@ -57,16 +57,19 @@ export const getTodaysSchedule = () => async (dispatch) => {
     }
     var currentYear = d.getFullYear()
     var todaysDate = String(currentDate + '-' + currentMonth + '-' + currentYear)
+    console.log(currentUserId)
     await firebase.firestore().collection('subscriptions').where('shopId', '==', currentUserId).get().then(async (snapshot) => {
+        // console.log('Hiiii')
         if (!snapshot.empty) {
             snapshot.forEach(doc => {
                 // console.log(doc.data())
                 var docdata = { ...doc.data(), "docId": doc.id }
+                // console.log(docdata)
                 var data = {
                     customerId: docdata.customerId,
                     customerName: docdata.customerName,
-                    customerEmial: docdata.customerEmail,
-                    // qty: docdata.qty,
+                    customerEmail: docdata.customerEmail,
+                    qty: docdata.qty,
                     address: docdata.subscriberAddress
                 }
                 if (docdata.isConfirm == true) {
@@ -80,7 +83,7 @@ export const getTodaysSchedule = () => async (dispatch) => {
                                     data = {
                                         customerId: docdata.customerId,
                                         customerName: docdata.customerName,
-                                        customerEmial: docdata.customerEmail,
+                                        customerEmail: docdata.customerEmail,
                                         qty: docdata.qty,
                                         address: docdata.subscriberAddress
                                     }
@@ -88,7 +91,7 @@ export const getTodaysSchedule = () => async (dispatch) => {
                                     data = {
                                         customerId: docdata.customerId,
                                         customerName: docdata.customerName,
-                                        customerEmial: docdata.customerEmail,
+                                        customerEmail: docdata.customerEmail,
                                         qty: docdata.qty[dayOfWeek],
                                         address: docdata.subscriberAddress
                                     }
@@ -96,8 +99,9 @@ export const getTodaysSchedule = () => async (dispatch) => {
                             }
                         }
                     }
+                    scheduleDetails.push(data)
                 }
-                scheduleDetails.push(data)
+                // console.log(scheduleDetails)
             });
         } else {
             console.log('Error while fetching schedule info')

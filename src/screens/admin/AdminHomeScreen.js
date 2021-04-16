@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Dimensions,Image } from 'react-native'
 import { Text } from 'react-native-paper'
 import AdminProfileScreen from './AdminProfileScreen'
 import AdminNotificationsScreen from './AdminNotificationsScreen'
@@ -10,9 +10,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { theme } from '../../theme'
 var primaryColor = theme.primaryColor
 import { getUserDetails, changeAppTheme, getSubscriptions } from '../../actions/userActions'
-import {getTodaysSchedule} from '../../actions/shopActions'
+import { getTodaysSchedule } from '../../actions/shopActions'
+import MapView, { Callout } from 'react-native-maps'
+import { region, markers, mapStyle } from '../../components/DairyShopData'
+import MapViewDirections from 'react-native-maps-directions'
+import { GOOGLE_MAPS_API_KEY } from '../../../googleMapsApiKey'
+
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height; 
 
 
 const logoutHandler = async ({ navigation }) => {
@@ -28,10 +33,17 @@ const logoutHandler = async ({ navigation }) => {
 const AdminHome = ({ navigation }) => {
   const { subscriptionsLoading, subscriptions } = useSelector(state => state.subscriptions)
   const { scheduleDetailsLoading, scheduleDetails } = useSelector(state => state.schedule)
-  const [milkContainerQty,setMilkContainerQty] = useState(0)
+  const { user } = useSelector(state => state.userDetails)
+  const [milkContainerQty, setMilkContainerQty] = useState(0)
+  const [distance, setDistance] = useState('NA')
+  const [duration, setDuration] = useState('NA')
+  // const [mapView,setMapView] = useState(null)
+  // const [waypoints,setWaypoints] = useState([])
   const dispatch = useDispatch()
+  // const [total,setTotal] = useState(0)
 
   useEffect(() => {
+    dispatch(getUserDetails())
     dispatch(getSubscriptions())
     dispatch(getTodaysSchedule())
   }, [dispatch])
@@ -48,7 +60,7 @@ const AdminHome = ({ navigation }) => {
   // const [today,setToday] = useState(todaysDate)
   // const [schedule,setSchedule] = useState([])
   // var scheduleDetails = []
-  
+
   if (scheduleDetailsLoading === false) {
     if (scheduleDetails.length > 0) {
       const data = scheduleDetails
@@ -61,6 +73,13 @@ const AdminHome = ({ navigation }) => {
           total = total + item.qty
         }
       })
+
+      var waypointslength = scheduleDetails.length
+      var waypoints = []
+
+      for (var i = 0; i < waypointslength; i++){
+        waypoints.push(scheduleDetails[i].address)
+      }
       // setMilkContainerQty(10)
       return (
         <View style={styles.container}>
@@ -72,11 +91,100 @@ const AdminHome = ({ navigation }) => {
           <View style={styles.mainContainer}>
             <View style={styles.section1}>
               <View style={styles.totalQtyContainer}>  
-                  <Text>{ total }</Text>
+                <Text style={{ fontSize: 28 }}>{total} <Text style={{fontSize: 20}}>liters</Text></Text>
               </View>
+              {/* {console.log(scheduleDetails)} */}
               <View style={styles.scheduleCard}>
-                <Text></Text>
+                {/* <Text>
+                  {console.log(scheduleDetails)}
+                </Text> */}
+                {
+                  scheduleDetails.map((item, key) => {
+                    if (item.qty > 0) {
+                      // setTotal(total+item.qty)
+                      return (
+                        <View style={styles.row}>
+                          {/* { item.customerName} */}
+                          <Text>{item.customerName}</Text>
+                          <Text>{item.qty}</Text>
+                          {/* <TouchableOpacity style={styles.btnContainer}><Text style={styles.btnText}>Mark as done</Text></TouchableOpacity> */}
+                        </View>
+                      )
+                    }
+                  })
+                }
+                <View style={styles.row}>
+                  <Text>Route distance: </Text>
+                  <Text>{distance} km</Text>
+                </View>
+                <View style={styles.row}>
+                  <Text>Trip duration: </Text>
+                  <Text>{duration} minute</Text>
+                </View>
               </View>
+            </View>
+                
+            <View style={styles.mapContainer}>
+              <MapView
+                style={StyleSheet.absoluteFillObject}
+                loadingEnabled={true}
+                customMapStyle={mapStyle}
+                region={region}
+                // ref={c => setMapView(c)}
+              >
+                {
+                  scheduleDetails.map((item, key) => {
+                    // waypoints.push(item.address)
+                    return (
+                      <MapView.Marker
+                        key={item.customerEmail}
+                        coordinate={{ latitude: item.address.latitude, longitude: item.address.longitude }}
+                        image={require('../../../assets/images/map_marker.png')}
+                      >
+                        <Callout tooltip>
+                          <View>
+                            <View style={styles.tooltip}>
+                              <Text style={styles.name}>{item.customerName}</Text>
+                              <Text style={styles.description}>: {item.customerEmail}</Text>
+                              {/* <Image style={styles.tooltipImage} source={require('../../../assets/images/dairyshop.jpg')} /> */}
+                            </View>
+                            <View style={styles.arrowBorder}></View>
+                            <View style={styles.arrow}></View>
+                          </View>
+                        </Callout>
+                      </MapView.Marker>
+                    )
+                  })
+                }
+                {/* {console.log(waypoints)} */}
+                <MapViewDirections
+                  origin={{
+                    latitude: user.address.latitude,
+                    longitude: user.address.longitude,
+                    latitudeDelta: 0.004,
+                    longitudeDelta: 0.00221
+                  }}
+                  waypoints={waypoints}
+                  optimizeWaypoints={true}
+                  destination={{
+                    latitude: user.address.latitude,
+                    longitude: user.address.longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421
+                  }}
+                  strokeWidth={5}
+                  strokeColor={primaryColor}
+                  apikey={GOOGLE_MAPS_API_KEY}
+                  onReady={(result) => {
+                    console.log(`Distance: ${result.distance} km`)
+                    console.log(`Duration: ${result.duration} min.`)
+                    setDistance(result.distance)
+                    setDuration(result.duration)
+                  }}
+                >
+                </MapViewDirections>
+                
+              </MapView>
             </View>
           </View>
         </View>
@@ -192,12 +300,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnContainer: {
-    marginTop: 10,
+    // marginTop: 10,
     borderWidth: 2,
     borderRadius: 5,
     borderColor: primaryColor,
-    height: windowHeight/16,
-    width: windowWidth / 1.85,
+    height: windowHeight/25,
+    width: windowWidth / 2.5,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -224,7 +332,7 @@ const styles = StyleSheet.create({
     height: windowHeight / 3,
     backgroundColor: primaryColor,
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   totalQtyContainer: {
     marginTop: 40,
@@ -242,7 +350,43 @@ const styles = StyleSheet.create({
     width: windowWidth / 1.1,
     backgroundColor: '#fff',
     borderRadius: 5,
-    padding: 10,
-    flexDirection: 'column'
+    padding: 20,
+    flexDirection: 'column',
+    elevation: 5
+    // zIndex: 10
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  mapContainer: {
+    width: windowWidth,
+    height: windowHeight - (windowHeight / 3),
+    zIndex: -10
+  },
+  tooltip: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 10
+  },
+  arrow: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderTopColor: '#fff',
+    borderWidth: 16,
+    alignSelf: 'center',
+    marginTop: -32
+  },
+  arrowBorder: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderTopColor: '#000',
+    borderWidth: 16,
+    alignSelf: 'center',
+    marginTop: -0.5
   }
 });
