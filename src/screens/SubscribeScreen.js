@@ -83,7 +83,7 @@ const SubscribeScreen = (props) => {
             }
             props.navigation.navigate('address',{data})
         } else {
-            console.log("Un able to get user's details")
+            console.log("Unable to get user's details")
         }
     }
 

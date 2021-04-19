@@ -6,6 +6,8 @@ import * as Location from 'expo-location'
 import firebase from 'firebase'
 import MapView from 'react-native-maps'
 import { mapStyle } from '../components/DairyShopData'
+import SendNotification from  '../components/SendNotification'
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height
@@ -33,7 +35,10 @@ const AddressScreen = (props) => {
             setAddress({latitude: coords.latitude,longitude: coords.longitude})
         }
     }
-
+    // console.log(data)
+    // console.log(data.shopDetails.expoPushToken)
+    // SendNotification('ExponentPushToken[9FX1siGpjTmGyoRGQrYGe-]', 'Business proposal', `You got subscription request from ${data.customerDetails.email}`)
+    
     const sendRequestHandler = async () => {
         // console.log(data)
         var splitdate = data.subscriberDetails.startingDate.split('-')
@@ -64,13 +69,14 @@ const AddressScreen = (props) => {
                     longitude: address.longitude
                 },
                 isConfirm: false
-            }).then((snapshot) => {
-                console.log(snapshot.id)
+            }).then(async(snapshot) => {
+                // console.log(snapshot.id)
                 // await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
                 //     subcription: firebase.firestore.FieldValue.arrayUnion({
                                     
                 //     })
                 // })
+                await SendNotification(data.shopDetails.expoPushToken,'Business proposal',`You got subscription request from ${data.customerDetails.email}`)
             });
             const message = {
                 name: data.shopDetails.name 

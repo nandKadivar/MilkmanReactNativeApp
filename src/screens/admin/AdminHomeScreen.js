@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useRef} from 'react'
 import { StyleSheet, View, TouchableOpacity, Dimensions,Image } from 'react-native'
 import { Text } from 'react-native-paper'
 import AdminProfileScreen from './AdminProfileScreen'
@@ -15,9 +15,40 @@ import MapView, { Callout } from 'react-native-maps'
 import { region, markers, mapStyle } from '../../components/DairyShopData'
 import MapViewDirections from 'react-native-maps-directions'
 import { GOOGLE_MAPS_API_KEY } from '../../../googleMapsApiKey'
+import SendNotification from  '../../components/SendNotification'
+// import {Permissions,Notifications} from 'expo-permissions'
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height; 
+
+const registerForNotifications = async () => {
+  const status = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+  let finalStatus = status
+
+  if (status != 'granted') {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+    finalStatus = status
+  }
+
+  if (finalStatus != 'granted') {
+    return
+  }
+
+  let token = await Notifications.getExpoPushTokenAsync()
+  console.log(token)
+  // sendPushNotification(token)
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+}
+
 
 
 const logoutHandler = async ({ navigation }) => {
@@ -37,6 +68,7 @@ const AdminHome = ({ navigation }) => {
   const [milkContainerQty, setMilkContainerQty] = useState(0)
   const [distance, setDistance] = useState('NA')
   const [duration, setDuration] = useState('NA')
+
   // const [mapView,setMapView] = useState(null)
   // const [waypoints,setWaypoints] = useState([])
   const dispatch = useDispatch()
@@ -46,6 +78,7 @@ const AdminHome = ({ navigation }) => {
     dispatch(getUserDetails())
     dispatch(getSubscriptions())
     dispatch(getTodaysSchedule())
+    registerForNotifications()
   }, [dispatch])
   // console.log(scheduleDetails)
 
@@ -60,6 +93,7 @@ const AdminHome = ({ navigation }) => {
   // const [today,setToday] = useState(todaysDate)
   // const [schedule,setSchedule] = useState([])
   // var scheduleDetails = []
+  
 
   if (scheduleDetailsLoading === false) {
     if (scheduleDetails.length > 0) {
@@ -93,6 +127,9 @@ const AdminHome = ({ navigation }) => {
               <View style={styles.totalQtyContainer}>  
                 <Text style={{ fontSize: 28 }}>{total} <Text style={{fontSize: 20}}>liters</Text></Text>
               </View>
+              {/* <TouchableOpacity style={{padding:10,backgroundColor: '#45489a'}} onPress={async() => await SendNotification('ExponentPushToken[9FX1siGpjTmGyoRGQrYGe-]','Business proposal','You got request from Nand for subscribtion')}>
+                  <Text>Send Notification</Text>
+              </TouchableOpacity> */}
               {/* {console.log(scheduleDetails)} */}
               <View style={styles.scheduleCard}>
                 {/* <Text>
